@@ -1,2 +1,48 @@
 # AD985X
+
 Arduino library for AD9850 and AD9851 function generators.
+
+
+## Description
+
+Experimental library for the AD9850 and 9851 function generators.
+The library has a 985X base class that implements the commonalities.
+The AD9850 and AD9851 are derived and have their own setFrequency method.
+Furthermore the AD9851 also has function to select the reference clock,
+a feature the AD9850 does not have.
+
+The libraries are not extensively tested so please file an issue if problems arise.
+
+**Warning**
+The library is not suitable for AD9852 as that is a function generator with
+way more functionality.
+
+
+## Interface
+
+- **AD985X()** base class, do not use directly as it will not compile.
+- **AD9850()**
+- **AD9851()**
+- **begin(selectPin, resetPin, FQUDPin, dataOut = 0, clock = 0)**  
+For hardware SPI only use the first three parameters, for SW SPI you need to define 
+the other three too.
+  - selectPin = chip select
+  - resetPin = reset
+  - FQUD = Frequency UpDate Pin
+- **reset()** reset the chip.
+- **powerDown()** idem
+- **setFrequency(uint32_t freq)** Note setFrequency is different implemented 
+per derived class. 
+- **getFrequency()** idem
+- **setPhase(uint8_t phase)** units of 11.25°
+- **getPhase()** idem
+
+The AD9851 also implements:
+- **setRefClock(uint8_t clock)** HIGH or LOW ??? 180 / 30 depends on chip used.  
+  TODO REDO INTERFACE HERE
+- **getRefClock()**
+
+
+## Operation
+
+See examples
