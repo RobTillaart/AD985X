@@ -2,17 +2,17 @@
 //
 //    FILE: AD985X.h
 //  AUTHOR: Rob Tillaart
-// VERSION: 0.1.0
+// VERSION: 0.1.1
 //    DATE: 2019-02-08
 // PURPOSE: Class for AD9851 function generator
 //
-//     URL: https://github.com/RobTillaart/AD985X.git
+//     URL: https://github.com/RobTillaart/AD985X
 //
 
 #include "Arduino.h"
 #include "SPI.h"
 
-#define AD985X_LIB_VERSION "0.1.0"
+#define AD985X_LIB_VERSION "0.1.1"
 
 #define AD9850_MAX_FREQ      (20UL * 1000UL * 1000UL)
 #define AD9851_MAX_FREQ      (70UL * 1000UL * 1000UL)
@@ -37,9 +37,9 @@ public:
   uint8_t  getPhase() { return (_config >> 3); };
 
 protected:
-  void pulsePin(uint8_t pin);
-  void writeData();
-  void swSPI_transfer(uint8_t value);
+  void     pulsePin(uint8_t pin);
+  void     writeData();
+  void     swSPI_transfer(uint8_t value);
 
   bool     _useHW   = true;
   uint8_t  _dataOut = 0;

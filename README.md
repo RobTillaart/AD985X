@@ -1,3 +1,8 @@
+
+[![Arduino CI](https://github.com/RobTillaart/AD985X/workflows/Arduino%20CI/badge.svg)](https://github.com/marketplace/actions/arduino_ci)
+[![License: MIT](https://img.shields.io/badge/license-MIT-green.svg)](https://github.com/RobTillaart/AD985X/blob/master/LICENSE)
+[![GitHub release](https://img.shields.io/github/release/RobTillaart/AD985X.svg?maxAge=3600)](https://github.com/RobTillaart/AD985X/releases)
+
 # AD985X
 
 Arduino library for AD9850 and AD9851 function generators.
@@ -5,8 +10,8 @@ Arduino library for AD9850 and AD9851 function generators.
 
 ## Description
 
-Experimental library for the AD9850 and 9851 function generators.
-The library has a 985X base class that implements the commonalities.
+Experimental library for the AD9850 and AD9851 function generators.
+The library has a AD985X base class that implements the commonalities.
 The AD9850 and AD9851 are derived and have their own setFrequency method.
 Furthermore the AD9851 also has function to select the reference clock,
 a feature the AD9850 does not have.

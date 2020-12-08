@@ -1,18 +1,16 @@
 //
 //    FILE: AD985X.cpp
 //  AUTHOR: Rob Tillaart
-// VERSION: 0.1.0
+// VERSION: 0.1.1
 //    DATE: 2019-02-08
 // PURPOSE: Class for AD9851 function generator
 //
 // HISTORY:
-// 0.1.0 - 2019-03-19 initial version
-//
-// Released to the public domain
+// 0.1.0   2019-03-19 initial version
+// 0.1.1   2020-12-09 add arduino-ci
 //
 
 #include "AD985X.h"
-#include <SPI.h>
 
 /* TODO
 https://github.com/cjheath/AD9851/blob/master/AD9851.h
@@ -104,7 +102,7 @@ void AD985X::pulsePin(uint8_t pin)
 void AD985X::writeData()
 {
   // Serial.println(_factor, HEX);
-  // Serial.println(_control, HEX);
+  // Serial.println(_config, HEX);
   uint32_t data = _factor;
   if (_useHW)
   {
@@ -154,7 +152,8 @@ void AD985X::swSPI_transfer(uint8_t value)
 ////////////////////////////////////////////////////////
 //
 // AD9850 
-// 
+//
+
 void AD9850::setFrequency(uint32_t freq)
 {
   // fOUT = (Δ Phase × CLKIN)/2^32  
