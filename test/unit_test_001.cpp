@@ -48,7 +48,7 @@ unittest(test_ad9850)
   AD9850 funcgen;
 
   funcgen.setFrequency(1000);
-  int32 freq = funcgen.getFrequency();
+  long freq = funcgen.getFrequency();
   assertEqual(1000, freq);
 
   for (int ph = 0; ph < 32; ph += 4)
@@ -64,7 +64,7 @@ unittest(test_ad9851)
   AD9851 funcgen;
 
   funcgen.setFrequency(1000);
-  int32 freq = funcgen.getFrequency();
+  long freq = funcgen.getFrequency();
   assertEqual(1000, freq);
 
   for (int ph = 0; ph < 32; ph += 4)

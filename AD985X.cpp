@@ -108,6 +108,7 @@ void AD985X::writeData()
   {
     SPI.beginTransaction(SPISettings(2000000, LSBFIRST, SPI_MODE0));
     digitalWrite(_select, LOW);
+
     SPI.transfer(data & 0xFF);
     data >>= 8;
     SPI.transfer(data & 0xFF);
@@ -115,12 +116,14 @@ void AD985X::writeData()
     SPI.transfer(data & 0xFF);
     SPI.transfer(data >> 8);
     SPI.transfer(_config);
+
     digitalWrite(_select, HIGH);
     SPI.endTransaction();
   }
   else
   {
     digitalWrite(_select, LOW);
+
     swSPI_transfer(data & 0xFF);
     data >>= 8;
     swSPI_transfer(data & 0xFF);
@@ -128,6 +131,7 @@ void AD985X::writeData()
     swSPI_transfer(data & 0xFF);
     swSPI_transfer(data >> 8);
     swSPI_transfer(_config);
+
     digitalWrite(_select, HIGH);
   }
 

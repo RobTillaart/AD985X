@@ -25,9 +25,13 @@ way more functionality.
 
 ## Interface
 
+### COnstructors
+
 - **AD985X()** base class, do not use directly as it will not compile.
 - **AD9850()**
 - **AD9851()**
+
+### Basic interface
 - **begin(selectPin, resetPin, FQUDPin, dataOut = 0, clock = 0)**  
 For hardware SPI only use the first three parameters, for SW SPI you need to define 
 the other three too.
@@ -36,11 +40,15 @@ the other three too.
   - FQUD = Frequency UpDate Pin
 - **reset()** reset the chip.
 - **powerDown()** idem
+- **powerUp()** idem
 - **setFrequency(uint32_t freq)** Note setFrequency is different implemented 
-per derived class. 
-- **getFrequency()** idem
-- **setPhase(uint8_t phase)** units of 11.25°
-- **getPhase()** idem
+per derived class. In the base class it is virtual.
+- **getFrequency()** returns the fequency set
+- **setPhase(uint8_t phase = 0)** set the phase in units of 11.25°  0..31 allowed. 
+Default it sets the phase to 0.
+- **getPhase()** returns the set phase.
+
+### AD9851 specific
 
 The AD9851 also implements:
 - **setRefClock(uint8_t clock)** HIGH or LOW ??? 180 / 30 depends on chip used.  
