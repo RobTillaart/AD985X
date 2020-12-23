@@ -96,7 +96,7 @@ unittest(test_ad9851_reset)
   
   funcgen.reset();
 
-  assertEqual(0,  funcgen.getFrequency())
+  assertEqual(0,  funcgen.getFrequency());
   assertEqual(0,  funcgen.getPhase());
   assertEqual(30, funcgen.getRefClock());
 }
