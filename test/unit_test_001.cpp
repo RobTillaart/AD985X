@@ -88,7 +88,7 @@ unittest(test_ad9851_reset)
   AD9851 funcgen;
 
   funcgen.setFrequency(1000);
-  assertEqual(1000, funcgen.getFrequency())
+  assertEqual(1000, funcgen.getFrequency());
   funcgen.setPhase(14);
   assertEqual(14, funcgen.getPhase());
   funcgen.setRefClockHigh();
