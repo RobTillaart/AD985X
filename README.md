@@ -25,13 +25,14 @@ way more functionality.
 
 ## Interface
 
-### COnstructors
+### Constructors
 
 - **AD985X()** base class, do not use directly as it will not compile.
 - **AD9850()**
 - **AD9851()**
 
 ### Basic interface
+
 - **begin(selectPin, resetPin, FQUDPin, dataOut = 0, clock = 0)**  
 For hardware SPI only use the first three parameters, for SW SPI you need to define 
 the other three too.
@@ -42,7 +43,8 @@ the other three too.
 - **powerDown()** idem
 - **powerUp()** idem
 - **setFrequency(uint32_t freq)** Note setFrequency is different implemented 
-per derived class. In the base class it is virtual.
+per derived class. In the base class this function is virtual.
+- **getMaxFrequency()** returns the maximum frequency setable. Differs per type. In the base class this function is virtual.
 - **getFrequency()** returns the fequency set
 - **setPhase(uint8_t phase = 0)** set the phase in units of 11.25°  0..31 allowed. 
 Default it sets the phase to 0.

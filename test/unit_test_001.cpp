@@ -38,8 +38,9 @@ unittest(test_constructor)
 {
   AD9850 funcgen0;
   AD9851 funcgen1;
-  
-  assertEqual(1, 1);
+
+  assertEqual(AD9850_MAX_FREQ, funcgen0.getMaxFrequency());
+  assertEqual(AD9851_MAX_FREQ, funcgen1.getMaxFrequency());
 }
 
 
@@ -59,6 +60,7 @@ unittest(test_ad9850)
   }
 }
 
+
 unittest(test_ad9851)
 {
   AD9851 funcgen;
@@ -73,6 +75,30 @@ unittest(test_ad9851)
     int phase = funcgen.getPhase();
     assertEqual(ph, phase);
   }
+
+  funcgen.setRefClockHigh();
+  assertEqual(180, funcgen.getRefClock());
+  funcgen.setRefClockLow();
+  assertEqual(30, funcgen.getRefClock());
+}
+
+
+unittest(test_ad9851_reset)
+{
+  AD9851 funcgen;
+
+  funcgen.setFrequency(1000);
+  assertEqual(1000, funcgen.getFrequency());
+  funcgen.setPhase(14);
+  assertEqual(14, funcgen.getPhase());
+  funcgen.setRefClockHigh();
+  assertEqual(180, funcgen.getRefClock());
+  
+  funcgen.reset();
+
+  assertEqual(0,  funcgen.getFrequency());
+  assertEqual(0,  funcgen.getPhase());
+  assertEqual(30, funcgen.getRefClock());
 }
 
 unittest_main()

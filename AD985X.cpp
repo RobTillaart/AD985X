@@ -16,12 +16,12 @@
 https://github.com/cjheath/AD9851/blob/master/AD9851.h
 */
 
-// UNO HARDWARE SPI   PINS
-#define SPI_CLOCK     13
-#define SPI_MISO      12
-#define SPI_MOSI      11
+// UNO HARDWARE SPI           PINS
+#define SPI_CLOCK             13
+#define SPI_MISO              12
+#define SPI_MOSI              11
 
-#define AD985X_POWERDOWN     0x04
+#define AD985X_POWERDOWN      0x04
 
 
 AD985X::AD985X()
@@ -33,7 +33,7 @@ void AD985X::begin(int select, int resetPin, int FQUDPin, int dataOut , int cloc
   _select = select;
   _reset  = resetPin;
   _fqud   = FQUDPin;
-  pinMode(_select, OUTPUT);  
+  pinMode(_select, OUTPUT);
   pinMode(_reset,  OUTPUT);
   pinMode(_fqud,   OUTPUT);
   digitalWrite(_select, LOW);
@@ -67,7 +67,7 @@ void AD985X::reset()
   if (_useHW) pulsePin(SPI_CLOCK);
   else pulsePin(_clock);
 
-  _config = 0;
+  _config = 0;    // 0 phase   no powerdown   30 MHz
   _freq   = 0;
   _factor = 0;
   writeData();
@@ -155,36 +155,39 @@ void AD985X::swSPI_transfer(uint8_t value)
 
 ////////////////////////////////////////////////////////
 //
-// AD9850 
+// AD9850
 //
 
 void AD9850::setFrequency(uint32_t freq)
 {
-  // fOUT = (Δ Phase × CLKIN)/2^32  
+  // freq OUT = (Δ Phase × CLKIN)/2^32
   // 64 bit math to keep precision to the max
   _freq = freq;
-  _factor = (147573952590ULL * freq) >> 32;  //  (1 << 64) / 125000000
+  if (_freq > AD9850_MAX_FREQ) _freq = AD9850_MAX_FREQ;
+
+  _factor = (147573952590ULL * _freq) >> 32;  //  (1 << 64) / 125000000
   writeData();
 }
 
 ////////////////////////////////////////////////////////
 //
-// AD9851 
-// 
+// AD9851
+//
 
-#define AD9851_REFCLK        0x01
+#define AD9851_REFCLK        0x01    // bit is a 6x multiplier bit P.14 datasheet
 
 void AD9851::setFrequency(uint32_t freq)
 {
-    // TODO  wat is the refclk of this
   _freq = freq;
-  if (_config & AD9851_REFCLK)  // 180 MHz
+  if (_freq > AD9851_MAX_FREQ) _freq = AD9851_MAX_FREQ;
+
+  if (_config & AD9851_REFCLK)  // 6x 30 = 180 MHz
   {
-    _factor = (102481911520ULL * freq) >> 32;  //  (1 << 64) / 180000000
+    _factor = (102481911520ULL * _freq) >> 32;  //  (1 << 64) / 180000000
   }
-  else                          // 30 MHz
+  else                          // 1x 30 = 30 MHz
   {
-    _factor = (614891469123ULL * freq) >> 32;  //  (1 << 64) / 30000000
+    _factor = (614891469123ULL * _freq) >> 32;  //  (1 << 64) / 30000000
   }
   writeData();
 }
