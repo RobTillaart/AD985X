@@ -31,6 +31,7 @@ public:
   // 0 .. 10.000.000(?)
   virtual void setFrequency(uint32_t freq) = 0;      // = 0  produces right error message
   uint32_t     getFrequency() { return _freq; };
+  virtual uint32_t getMaxFrequency() = 0;
 
   // 0 .. 31  steps of 11.25 degrees
   void     setPhase(uint8_t phase = 0);
@@ -57,17 +58,18 @@ protected:
 class AD9851 : public AD985X
 {
 public:
-  void     setFrequency(uint32_t freq);
-  // 30 or 180
-  void     setRefClockHigh();
-  void     setRefClockLow();
+  void     setFrequency(uint32_t freq);  // 0..AD9851_MAX_FREQ
+  uint32_t getMaxFrequency() { return AD9851_MAX_FREQ; };
+  void     setRefClockHigh();   // 180 MHz
+  void     setRefClockLow();    //  30 MHz
   uint8_t  getRefClock();
 };
 
 class AD9850 : public AD985X
 {
 public:
-  void     setFrequency(uint32_t freq);
+  void     setFrequency(uint32_t freq);  // 0..AD9850_MAX_FREQ
+  uint32_t getMaxFrequency() { return AD9850_MAX_FREQ; };
 };
 
 
