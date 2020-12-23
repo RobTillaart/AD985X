@@ -60,6 +60,7 @@ unittest(test_ad9850)
   }
 }
 
+
 unittest(test_ad9851)
 {
   AD9851 funcgen;
@@ -80,6 +81,7 @@ unittest(test_ad9851)
   funcgen.setRefClockLow();
   assertEqual(30, funcgen.getRefClock());
 }
+
 
 unittest(test_ad9851_reset)
 {

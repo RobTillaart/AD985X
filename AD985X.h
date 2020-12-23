@@ -28,8 +28,7 @@ public:
   void     powerDown();
   void     powerUp();
 
-  // 0 .. 10.000.000(?)
-  virtual void setFrequency(uint32_t freq) = 0;      // = 0  produces right error message
+  virtual void setFrequency(uint32_t freq) = 0;  // = 0  produces right error message
   uint32_t     getFrequency() { return _freq; };
   virtual uint32_t getMaxFrequency() = 0;
 
