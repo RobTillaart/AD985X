@@ -1,7 +1,7 @@
 //
 //    FILE: AD9851_demo.ino
 //  AUTHOR: Rob Tillaart
-// VERSION: 0.0.1
+// VERSION: 0.1.0
 // PURPOSE: demo
 //
 // HISTORY:
@@ -13,7 +13,7 @@
 uint32_t start;
 uint32_t stop;
 
-AD9851 freqGen;
+AD9851 freqGen; 
 
 uint32_t freq = 0;
 uint32_t prev = 0;
