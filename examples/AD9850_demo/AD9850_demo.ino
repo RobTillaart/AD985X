@@ -28,7 +28,7 @@ void setup()
   help();
 
   freqGen.begin(10, 9, 8);
-  maxFreq = freqGen.getMaxFrequecy();
+  maxFreq = freqGen.getMaxFrequency();
 }
 
 void loop()
