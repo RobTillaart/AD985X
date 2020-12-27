@@ -39,6 +39,7 @@ unittest(test_constructor)
   fprintf(stderr, "VERSION: %s\n", AD985X_LIB_VERSION);
   AD9850 funcgen0;
   AD9851 funcgen1;
+  AD9851F  funcgenf;
 
   assertEqual(AD9850_MAX_FREQ, funcgen0.getMaxFrequency());
   assertEqual(AD9851_MAX_FREQ, funcgen1.getMaxFrequency());
@@ -147,6 +148,7 @@ unittest(test_ad9851_offset)
   for (int32_t offset = -1000; offset <= 1000; offset += 100)
   {
     funcgen.setCalibrationOffset(offset);
+    fprintf(stderr, "offset %ld\t", offset);
     assertEqual(offset, funcgen.getCalibrationOffset());
   }
   assertEqual(1000000, funcgen.getFrequency());
