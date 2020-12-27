@@ -201,7 +201,7 @@ void AD9851::setFrequency(uint32_t freq)
   {
     _factor = (614891469123ULL * _freq) >> 32;  //  (1 << 64) / 30000000
   }
-  _factor += offset;
+  _factor += _offset;
   writeData();
 }
 

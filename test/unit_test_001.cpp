@@ -128,10 +128,10 @@ unittest(test_ad9851_autoRefClock)
     assertFalse(funcgen.getAutoRefClock());
   }
   funcgen.setFrequency(7000000);
-  fprintf(stderr, "freq %ld\t", freq);
+  fprintf(stderr, "freq 7000000\t");
   assertTrue(funcgen.getAutoRefClock());
   funcgen.setFrequency(70000000);
-  fprintf(stderr, "freq %ld\t", freq);
+  fprintf(stderr, "freq 70000000\t");
   assertTrue(funcgen.getAutoRefClock());
 }
 
@@ -151,7 +151,7 @@ unittest(test_ad9851_offset)
     assertEqual(offset, funcgen.getCalibrationOffset());
   }
 
-  funcgen.setCalibrationOffset(offset);
+  funcgen.setCalibrationOffset();
   assertEqual(0, funcgen.getCalibrationOffset());
 }
 
