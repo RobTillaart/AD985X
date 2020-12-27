@@ -143,13 +143,13 @@ unittest(test_ad9851_offset)
 
   assertEqual(0, funcgen.getCalibrationOffset());
   funcgen.setFrequency(1000000);
-
+  assertEqual(1000000, funcgen.getFrequency());
   for (int32_t offset = -1000; offset <= 1000; offset += 100)
   {
     funcgen.setCalibrationOffset(offset);
-    assertEqual(1000000, funcgen.getFrequency());
     assertEqual(offset, funcgen.getCalibrationOffset());
   }
+  assertEqual(1000000, funcgen.getFrequency());
 
   funcgen.setCalibrationOffset();
   assertEqual(0, funcgen.getCalibrationOffset());

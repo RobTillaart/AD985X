@@ -222,5 +222,39 @@ uint8_t AD9851::getRefClock()
   return (_config & AD9851_REFCLK) ? 180 : 30;
 }
 
+
+////////////////////////////////////////////////////////
+//
+// AD9851F
+//
+
+void AD9851F::setFrequency(float freq)
+{
+  _freq = freq;
+  if (_freq > AD9851_MAX_FREQ) _freq = AD9851_MAX_FREQ;
+
+  // AUTO SWITCH REFERENCE FREQUENCY
+  if (_autoRefClock && (_freq > 1000000))
+  {
+    _config |= AD9851_REFCLK;
+  }
+  else
+  {
+    _config &= ~AD9851_REFCLK;
+  }
+
+  if (_config & AD9851_REFCLK)  // 6x 30 = 180 MHz
+  {
+    _factor = uint64_t(102481911520ULL * _freq) >> 32;  //  (1 << 64) / 180000000
+  }
+  else                          // 1x 30 = 30 MHz
+  {
+    _factor = uint64_t(614891469123ULL * _freq) >> 32;  //  (1 << 64) / 30000000
+  }
+  _factor += _offset;
+  writeData();
+}
+
+
 // -- END OF FILE --
 

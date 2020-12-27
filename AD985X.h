@@ -74,7 +74,7 @@ public:
   void     setAutoRefClock(bool arc) { _autoRefClock = arc; };
   bool     getAutoRefClock()  { return _autoRefClock; };
 
-private:
+protected:
   bool     _autoRefClock = false;
 
 };
@@ -85,6 +85,16 @@ public:
   void     setFrequency(uint32_t freq);  // 0..AD9850_MAX_FREQ
   uint32_t getMaxFrequency() { return AD9850_MAX_FREQ; };
 };
+
+class AD9851F : public AD9851
+{
+  void     setFrequency(float freq);  // 0..AD9851_MAX_FREQ
+  float    getFrequency()    { return _freq; };
+  
+protected:
+  float _freq;
+}
+
 
 
 // -- END OF FILE --
