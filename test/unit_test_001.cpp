@@ -21,6 +21,12 @@
 
 #include <ArduinoUnitTests.h>
 
+
+#define assertEqualFloat(arg1, arg2, arg3)  assertOp("assertEqualFloat", "expected", fabs(arg1 - arg2), compareLessOrEqual, "<=", "actual", arg3)
+#define assertEqualINF(arg)  assertOp("assertEqualINF", "expected", INFINITY, compareEqual, "==", "actual", arg)
+#define assertEqualNAN(arg)  assertOp("assertEqualNAN", "expected", true, compareEqual, "==", "actual", isnan(arg))
+
+
 #include "Arduino.h"
 #include "AD985X.h"
 
@@ -166,6 +172,7 @@ unittest(test_ad9851F)
   {
     funcgen.setFrequency(f);
     assertEqualFloat(f, funcgen.getFrequency(), 0.001);
+    fprintf(stderr, "%f\n", funcgen.getFactor());
   }
 }
 
