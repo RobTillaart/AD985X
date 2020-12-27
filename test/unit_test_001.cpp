@@ -45,10 +45,11 @@ unittest(test_constructor)
   fprintf(stderr, "VERSION: %s\n", AD985X_LIB_VERSION);
   AD9850 funcgen0;
   AD9851 funcgen1;
-  AD9851F  funcgenf;
+  AD9851F funcgenf;
 
   assertEqual(AD9850_MAX_FREQ, funcgen0.getMaxFrequency());
   assertEqual(AD9851_MAX_FREQ, funcgen1.getMaxFrequency());
+  assertEqual(AD9851_MAX_FREQ, funcgenf.getMaxFrequency());
 }
 
 
@@ -171,8 +172,8 @@ unittest(test_ad9851F)
   for (float f = 100.0; f < 110.0; f += 0.1)
   {
     funcgen.setFrequency(f);
+    fprintf(stderr, "%ld\t", funcgen.getFactor());
     assertEqualFloat(f, funcgen.getFrequency(), 0.001);
-    fprintf(stderr, "%f\n", funcgen.getFactor());
   }
 }
 
