@@ -2,7 +2,7 @@
 //
 //    FILE: AD985X.h
 //  AUTHOR: Rob Tillaart
-// VERSION: 0.1.1
+// VERSION: 0.1.2
 //    DATE: 2019-02-08
 // PURPOSE: Class for AD9851 function generator
 //
@@ -12,7 +12,7 @@
 #include "Arduino.h"
 #include "SPI.h"
 
-#define AD985X_LIB_VERSION "0.1.1"
+#define AD985X_LIB_VERSION "0.1.2"
 
 #define AD9850_MAX_FREQ      (20UL * 1000UL * 1000UL)
 #define AD9851_MAX_FREQ      (70UL * 1000UL * 1000UL)
@@ -30,11 +30,18 @@ public:
 
   virtual void setFrequency(uint32_t freq) = 0;  // = 0  produces right error message
   uint32_t     getFrequency() { return _freq; };
+  uint32_t     getFactor()    { return _factor; };
   virtual uint32_t getMaxFrequency() = 0;
 
   // 0 .. 31  steps of 11.25 degrees
   void     setPhase(uint8_t phase = 0);
   uint8_t  getPhase() { return (_config >> 3); };
+
+  // EXPERIMENTAL
+  // offset to calibrate the frequency (internal counter)
+  // offset must be stored by the user.
+  void     setCalibrationOffset(int32_t offset = 0) { _offset = offset; };
+  int32_t  getCalibrationOffset()  { return _offset; };
 
 protected:
   void     pulsePin(uint8_t pin);
@@ -51,6 +58,7 @@ protected:
   uint8_t  _config  = 0;
   uint8_t  _reset   = 0;
   uint8_t  _fqud    = 0;
+  int32_t  _offset  = 0;
 };
 
 
@@ -58,10 +66,17 @@ class AD9851 : public AD985X
 {
 public:
   void     setFrequency(uint32_t freq);  // 0..AD9851_MAX_FREQ
-  uint32_t getMaxFrequency() { return AD9851_MAX_FREQ; };
+  uint32_t getMaxFrequency()  { return AD9851_MAX_FREQ; };
+
   void     setRefClockHigh();   // 180 MHz
   void     setRefClockLow();    //  30 MHz
   uint8_t  getRefClock();
+  void     setAutoRefClock(bool arc) { _autoRefClock = arc; };
+  bool     getAutoRefClock()  { return _autoRefClock; };
+
+private:
+  bool     _autoRefClock = false;
+
 };
 
 class AD9850 : public AD985X

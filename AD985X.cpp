@@ -1,14 +1,14 @@
 //
 //    FILE: AD985X.cpp
 //  AUTHOR: Rob Tillaart
-// VERSION: 0.1.1
+// VERSION: 0.1.2
 //    DATE: 2019-02-08
 // PURPOSE: Class for AD9851 function generator
 //
-// HISTORY:
-// 0.1.0   2019-03-19 initial version
-// 0.1.1   2020-12-09 add arduino-ci
-//
+//  HISTORY:
+//  0.1.0   2019-03-19  initial version
+//  0.1.1   2020-12-09  add arduino-ci
+//  0.1.2   2020-12-27  add setAutoMOde()
 
 #include "AD985X.h"
 
@@ -70,6 +70,7 @@ void AD985X::reset()
   _config = 0;    // 0 phase   no powerdown   30 MHz
   _freq   = 0;
   _factor = 0;
+  _offset = 0;
   writeData();
 }
 
@@ -166,6 +167,7 @@ void AD9850::setFrequency(uint32_t freq)
   if (_freq > AD9850_MAX_FREQ) _freq = AD9850_MAX_FREQ;
 
   _factor = (147573952590ULL * _freq) >> 32;  //  (1 << 64) / 125000000
+  _factor += _offset;
   writeData();
 }
 
@@ -181,6 +183,16 @@ void AD9851::setFrequency(uint32_t freq)
   _freq = freq;
   if (_freq > AD9851_MAX_FREQ) _freq = AD9851_MAX_FREQ;
 
+  // AUTO SWITCH REFERENCE FREQUENCY
+  if (_autoRefClock && (_freq > 1000000))
+  {
+    _config |= AD9851_REFCLK;
+  }
+  else
+  {
+    _config &= ~AD9851_REFCLK;
+  }
+
   if (_config & AD9851_REFCLK)  // 6x 30 = 180 MHz
   {
     _factor = (102481911520ULL * _freq) >> 32;  //  (1 << 64) / 180000000
@@ -189,6 +201,7 @@ void AD9851::setFrequency(uint32_t freq)
   {
     _factor = (614891469123ULL * _freq) >> 32;  //  (1 << 64) / 30000000
   }
+  _factor += offset;
   writeData();
 }
 
