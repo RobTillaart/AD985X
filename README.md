@@ -27,9 +27,8 @@ way more functionality.
 
 ### Constructors
 
-- **AD985X()** base class, can not be used directly as it will not compile.
-- **AD9850()** 20 MHz signal generator.
-- **AD9851()** 70 MHz signal generator, some extra options.
+- **AD9850()** 20 MHz signal generator
+- **AD9851()** 70 MHz signal generator, derived from AD9850 with some extra options.
 
 ### Common interface
 
@@ -46,8 +45,9 @@ the other three too.
 MaxFrequency of the class used. For the AD9850 => 20 MHz, for the AD9851 => 70 MHz. 
   - Note that the quality of the signal gets less at higher frequencies. 
   - Note that in the base class this function is virtual.
+- **setFrequencyF(float freq)** SetFrequencyF sets the frequency with float.
 - **getMaxFrequency()** returns the maximum frequency setable. For the AD9850 this is 20 MHz, for the AD9851 this is 70 MHz. Note that in the base class this function is virtual.
-- **getFrequency()** returns the frequency set. 
+- **getFrequency()** returns the - integer part of the - frequency set. 
 - **setPhase(uint8_t phase = 0)** set the phase in units of 11.25°  0..31 allowed. 
 Default it sets the phase to 0.
 - **getPhase()** returns the set phase.

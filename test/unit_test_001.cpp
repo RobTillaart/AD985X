@@ -169,7 +169,7 @@ unittest(test_ad9851_float_freq)
 
   for (float f = 100.0; f < 110.0; f += 0.1)
   {
-    funcgen.setFrequency(f);
+    funcgen.setFrequencyF(f);
     fprintf(stderr, "%ld\t", funcgen.getFactor());
     assertEqualFloat(f, funcgen.getFrequency(), 1.0);
   }
