@@ -20,8 +20,8 @@ getRefClock	KEYWORD2
 # Experimental
 setAutoRefClock	KEYWORD2
 getAutoRefClock	KEYWORD2
-setCalibrationOffset	KEYWORD2
-getCalibrationOffset	KEYWORD2
+setCalibration	KEYWORD2
+getCalibration	KEYWORD2
 
 # Instances (KEYWORD2)
 
