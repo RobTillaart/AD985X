@@ -67,7 +67,7 @@ class AD9851 : public AD9850
 {
 public:
   void     setFrequency(uint32_t freq);    // 0..AD9851_MAX_FREQ
-  void     setFrequency(float freq);
+  void     setFrequencyF(float freq);
   uint32_t getMaxFrequency()  { return AD9851_MAX_FREQ; };
 
   void     setRefClockHigh();   // 180 MHz
