@@ -1,20 +1,18 @@
 //
 //    FILE: AD985X.cpp
 //  AUTHOR: Rob Tillaart
-// VERSION: 0.1.2
+// VERSION: 0.2.0
 //    DATE: 2019-02-08
-// PURPOSE: Class for AD9851 function generator
+// PURPOSE: Class for AD9850 and AD9851 function generator
 //
 //  HISTORY:
 //  0.1.0   2019-03-19  initial version
 //  0.1.1   2020-12-09  add arduino-ci
-//  0.1.2   2020-12-27  add setAutoMOde()
+//  0.1.2   2020-12-27  add setAutoMode() + offset
+//  0.2.0   2020-12-28  major refactor class hierarchy + float frequency
 
 #include "AD985X.h"
 
-/* TODO
-https://github.com/cjheath/AD9851/blob/master/AD9851.h
-*/
 
 // UNO HARDWARE SPI           PINS
 #define SPI_CLOCK             13
@@ -24,11 +22,12 @@ https://github.com/cjheath/AD9851/blob/master/AD9851.h
 #define AD985X_POWERDOWN      0x04
 
 
-AD985X::AD985X()
+AD9850::AD9850()
 {
 }
 
-void AD985X::begin(int select, int resetPin, int FQUDPin, int dataOut , int clock)
+
+void AD9850::begin(int select, int resetPin, int FQUDPin, int dataOut , int clock)
 {
   _select = select;
   _reset  = resetPin;
@@ -61,7 +60,8 @@ void AD985X::begin(int select, int resetPin, int FQUDPin, int dataOut , int cloc
   reset();
 }
 
-void AD985X::reset()
+
+void AD9850::reset()
 {
   pulsePin(_reset);
   if (_useHW) pulsePin(SPI_CLOCK);
@@ -74,19 +74,22 @@ void AD985X::reset()
   writeData();
 }
 
-void AD985X::powerDown()
+
+void AD9850::powerDown()
 {
   _config |= AD985X_POWERDOWN;      // keep phase and REFCLK as is.
   writeData();
 }
 
-void AD985X::powerUp()
+
+void AD9850::powerUp()
 {
   _config &= ~AD985X_POWERDOWN;      // TODO MAGIC NR.
   writeData();
 }
 
-void AD985X::setPhase(uint8_t phase)
+
+void AD9850::setPhase(uint8_t phase)
 {
   if (phase > 31) return;
   _config &= 0x07;
@@ -94,13 +97,15 @@ void AD985X::setPhase(uint8_t phase)
   writeData();
 }
 
-void AD985X::pulsePin(uint8_t pin)
+
+void AD9850::pulsePin(uint8_t pin)
 {
   digitalWrite(pin, HIGH);
   digitalWrite(pin, LOW);
 }
 
-void AD985X::writeData()
+
+void AD9850::writeData()
 {
   // Serial.println(_factor, HEX);
   // Serial.println(_config, HEX);
@@ -140,8 +145,9 @@ void AD985X::writeData()
   pulsePin(_fqud);
 }
 
+
 // simple one mode version
-void AD985X::swSPI_transfer(uint8_t value)
+void AD9850::swSPI_transfer(uint8_t value)
 {
   // for (uint8_t mask = 0x80; mask; mask >>= 1)   // MSBFIRST
   for (uint8_t mask = 0x01; mask; mask <<= 1)   // LSBFIRST
@@ -153,20 +159,27 @@ void AD985X::swSPI_transfer(uint8_t value)
 }
 
 
-
-////////////////////////////////////////////////////////
-//
-// AD9850
-//
-
 void AD9850::setFrequency(uint32_t freq)
 {
   // freq OUT = (Δ Phase × CLKIN)/2^32
   // 64 bit math to keep precision to the max
+  if (freq > AD9850_MAX_FREQ) freq = AD9850_MAX_FREQ;
+  _factor = (147573952590ULL * freq) >> 32;  //  (1 << 64) / 125000000
   _freq = freq;
-  if (_freq > AD9850_MAX_FREQ) _freq = AD9850_MAX_FREQ;
+  _factor += _offset;
+  writeData();
+}
 
-  _factor = (147573952590ULL * _freq) >> 32;  //  (1 << 64) / 125000000
+
+// from 16777216 and up the uint32_t is more precise ...
+// TODO: test accuracy decimals
+void AD9850::setFrequency(float freq)
+{
+  // freq OUT = (Δ Phase × CLKIN)/2^32
+  // 64 bit math to keep precision to the max
+  if (freq > AD9850_MAX_FREQ) freq = AD9850_MAX_FREQ;
+  _factor = uint64_t(147573952590ULL * freq) >> 32;  //  (1 << 64) / 125000000
+  _freq = freq;
   _factor += _offset;
   writeData();
 }
@@ -178,13 +191,12 @@ void AD9850::setFrequency(uint32_t freq)
 
 #define AD9851_REFCLK        0x01    // bit is a 6x multiplier bit P.14 datasheet
 
+
 void AD9851::setFrequency(uint32_t freq)
 {
-  _freq = freq;
-  if (_freq > AD9851_MAX_FREQ) _freq = AD9851_MAX_FREQ;
-
+  if (freq > AD9851_MAX_FREQ) freq = AD9851_MAX_FREQ;
   // AUTO SWITCH REFERENCE FREQUENCY
-  if (_autoRefClock && (_freq > 1000000))
+  if (_autoRefClock && (freq > 1000000))
   {
     _config |= AD9851_REFCLK;
   }
@@ -195,15 +207,46 @@ void AD9851::setFrequency(uint32_t freq)
 
   if (_config & AD9851_REFCLK)  // 6x 30 = 180 MHz
   {
-    _factor = (102481911520ULL * _freq) >> 32;  //  (1 << 64) / 180000000
+    _factor = (102481911520ULL * freq) >> 32;  //  (1 << 64) / 180000000
   }
   else                          // 1x 30 = 30 MHz
   {
-    _factor = (614891469123ULL * _freq) >> 32;  //  (1 << 64) / 30000000
+    _factor = (614891469123ULL * freq) >> 32;  //  (1 << 64) / 30000000
   }
+  _freq = freq;
   _factor += _offset;
   writeData();
 }
+
+
+// from 16777216 and up the uint32_t is more precise..
+// TODO: test accuracy decimals
+void AD9851::setFrequency(float freq)
+{
+  if (freq > AD9851_MAX_FREQ) freq = AD9851_MAX_FREQ;
+  // AUTO SWITCH REFERENCE FREQUENCY
+  if (_autoRefClock && (freq > 1000000))
+  {
+    _config |= AD9851_REFCLK;
+  }
+  else
+  {
+    _config &= ~AD9851_REFCLK;
+  }
+
+  if (_config & AD9851_REFCLK)  // 6x 30 = 180 MHz
+  {
+    _factor = uint64_t(102481911520ULL * freq) >> 32;  //  (1 << 64) / 180000000
+  }
+  else                          // 1x 30 = 30 MHz
+  {
+    _factor = uint64_t(614891469123ULL * freq) >> 32;  //  (1 << 64) / 30000000
+  }
+  _freq = freq;
+  _factor += _offset;
+  writeData();
+}
+
 
 void AD9851::setRefClockHigh()
 {
@@ -211,48 +254,17 @@ void AD9851::setRefClockHigh()
   writeData();
 }
 
+
 void AD9851::setRefClockLow()
 {
   _config &= ~AD9851_REFCLK;
   writeData();
 }
 
+
 uint8_t AD9851::getRefClock()
 {
   return (_config & AD9851_REFCLK) ? 180 : 30;
-}
-
-
-////////////////////////////////////////////////////////
-//
-// AD9851F
-//
-
-void AD9851F::setFrequency(float freq)
-{
-  _freq = freq;
-  if (_freq > AD9851_MAX_FREQ) _freq = AD9851_MAX_FREQ;
-
-  // AUTO SWITCH REFERENCE FREQUENCY
-  if (_autoRefClock && (_freq > 1000000))
-  {
-    _config |= AD9851_REFCLK;
-  }
-  else
-  {
-    _config &= ~AD9851_REFCLK;
-  }
-
-  if (_config & AD9851_REFCLK)  // 6x 30 = 180 MHz
-  {
-    _factor = uint64_t(102481911520ULL * _freq) >> 32;  //  (1 << 64) / 180000000
-  }
-  else                          // 1x 30 = 30 MHz
-  {
-    _factor = uint64_t(614891469123ULL * _freq) >> 32;  //  (1 << 64) / 30000000
-  }
-  _factor += _offset;
-  writeData();
 }
 
 

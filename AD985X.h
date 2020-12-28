@@ -2,9 +2,9 @@
 //
 //    FILE: AD985X.h
 //  AUTHOR: Rob Tillaart
-// VERSION: 0.1.2
+// VERSION: 0.2.0
 //    DATE: 2019-02-08
-// PURPOSE: Class for AD9851 function generator
+// PURPOSE: Class for AD9850 and AD9851 function generator
 //
 //     URL: https://github.com/RobTillaart/AD985X
 //
@@ -12,15 +12,15 @@
 #include "Arduino.h"
 #include "SPI.h"
 
-#define AD985X_LIB_VERSION "0.1.2"
+#define AD985X_LIB_VERSION "0.2.0"
 
 #define AD9850_MAX_FREQ      (20UL * 1000UL * 1000UL)
 #define AD9851_MAX_FREQ      (70UL * 1000UL * 1000UL)
 
-class AD985X
+class AD9850
 {
 public:
-  AD985X();
+  AD9850();
 
   // for HW SPI only use lower 3 parameters.
   void     begin(int select, int resetPin, int FQUDPin, int dataOut = 0, int clock = 0);
@@ -28,10 +28,11 @@ public:
   void     powerDown();
   void     powerUp();
 
-  virtual void setFrequency(uint32_t freq) = 0;  // = 0  produces right error message
-  uint32_t     getFrequency() { return _freq; };
-  uint32_t     getFactor()    { return _factor; };
-  virtual uint32_t getMaxFrequency() = 0;
+  void     setFrequency(uint32_t freq);        // 0..AD9850_MAX_FREQ
+  void     setFrequency(float freq);           // works best for lower frequencies.
+  uint32_t getFrequency() { return _freq; };   // only returns integer part of freq
+  uint32_t getFactor()    { return _factor; };
+  uint32_t getMaxFrequency() { return AD9850_MAX_FREQ; };
 
   // 0 .. 31  steps of 11.25 degrees
   void     setPhase(uint8_t phase = 0);
@@ -62,10 +63,11 @@ protected:
 };
 
 
-class AD9851 : public AD985X
+class AD9851 : public AD9850
 {
 public:
-  void     setFrequency(uint32_t freq);  // 0..AD9851_MAX_FREQ
+  void     setFrequency(uint32_t freq);    // 0..AD9851_MAX_FREQ
+  void     setFrequency(float freq);
   uint32_t getMaxFrequency()  { return AD9851_MAX_FREQ; };
 
   void     setRefClockHigh();   // 180 MHz
@@ -78,25 +80,5 @@ protected:
   bool     _autoRefClock = false;
 
 };
-
-class AD9850 : public AD985X
-{
-public:
-  void     setFrequency(uint32_t freq);  // 0..AD9850_MAX_FREQ
-  uint32_t getMaxFrequency() { return AD9850_MAX_FREQ; };
-};
-
-class AD9851F : public AD9851
-{
-  public:
-  void     setFrequency(float freq);  // 0..AD9851_MAX_FREQ
-  float    getFrequency()    { return _freq; };
-  
-protected:
-  float _freq;
-};
-
-
-
 
 // -- END OF FILE --

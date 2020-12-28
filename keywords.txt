@@ -18,10 +18,10 @@ setRefClockLow	KEYWORD2
 getRefClock	KEYWORD2
 
 # Experimental
-# setAutoRefClock	KEYWORD2
-# getAutoRefClock	KEYWORD2
-# setCalibrationOffset	KEYWORD2
-# getCalibrationOffset	KEYWORD2
+setAutoRefClock	KEYWORD2
+getAutoRefClock	KEYWORD2
+setCalibrationOffset	KEYWORD2
+getCalibrationOffset	KEYWORD2
 
 # Instances (KEYWORD2)
 
