@@ -42,7 +42,7 @@ void AD985X::begin(int select, int resetPin, int FQUDPin, int dataOut , int cloc
   _useHW     = true;
 
   // SW SPI
-  if ((dataOut != 0) && (_clock != 0))
+  if ((dataOut != 0) && (clock != 0))
   {
     _dataOut   = dataOut;
     _clock     = clock;
