@@ -147,19 +147,19 @@ unittest(test_ad9851_offset)
   AD9851 funcgen;
   funcgen.begin(4, 5, 6);
 
-  assertEqual(0, funcgen.getCalibrationOffset());
+  assertEqual(0, funcgen.getCalibration());
   funcgen.setFrequency(1000000);
   assertEqual(1000000, funcgen.getFrequency());
   for (int32_t offset = -1000; offset <= 1000; offset += 100)
   {
-    funcgen.setCalibrationOffset(offset);
+    funcgen.setCalibration(offset);
     fprintf(stderr, "offset %d\t", offset);
-    assertEqual(offset, funcgen.getCalibrationOffset());
+    assertEqual(offset, funcgen.getCalibration());
   }
   assertEqual(1000000, funcgen.getFrequency());
 
-  funcgen.setCalibrationOffset();
-  assertEqual(0, funcgen.getCalibrationOffset());
+  funcgen.setCalibration();
+  assertEqual(0, funcgen.getCalibration());
 }
 
 unittest(test_ad9851_float_freq)

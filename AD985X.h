@@ -41,7 +41,7 @@ public:
   // offset must be stored by the user.
   void     setCalibration(int32_t offset = 0) { _offset = offset; };
   int32_t  getCalibration()  { return _offset; };
-  // internal chip factor used for frequency.
+  // internal chip factor used for frequency. (debugging only)
   uint32_t getFactor()       { return _factor; };
 
 protected:
