@@ -26,7 +26,6 @@ AD9850::AD9850()
 {
 }
 
-
 void AD9850::begin(int select, int resetPin, int FQUDPin, int dataOut , int clock)
 {
   _select = select;
@@ -60,7 +59,6 @@ void AD9850::begin(int select, int resetPin, int FQUDPin, int dataOut , int cloc
   reset();
 }
 
-
 void AD9850::reset()
 {
   pulsePin(_reset);
@@ -74,20 +72,17 @@ void AD9850::reset()
   writeData();
 }
 
-
 void AD9850::powerDown()
 {
   _config |= AD985X_POWERDOWN;      // keep phase and REFCLK as is.
   writeData();
 }
 
-
 void AD9850::powerUp()
 {
   _config &= ~AD985X_POWERDOWN;      // TODO MAGIC NR.
   writeData();
 }
-
 
 void AD9850::setPhase(uint8_t phase)
 {
@@ -97,13 +92,11 @@ void AD9850::setPhase(uint8_t phase)
   writeData();
 }
 
-
 void AD9850::pulsePin(uint8_t pin)
 {
   digitalWrite(pin, HIGH);
   digitalWrite(pin, LOW);
 }
-
 
 void AD9850::writeData()
 {
@@ -145,7 +138,6 @@ void AD9850::writeData()
   pulsePin(_fqud);
 }
 
-
 // simple one mode version
 void AD9850::swSPI_transfer(uint8_t value)
 {
@@ -158,7 +150,6 @@ void AD9850::swSPI_transfer(uint8_t value)
   }
 }
 
-
 void AD9850::setFrequency(uint32_t freq)
 {
   // freq OUT = (Δ Phase × CLKIN)/2^32
@@ -169,7 +160,6 @@ void AD9850::setFrequency(uint32_t freq)
   _factor += _offset;
   writeData();
 }
-
 
 // from 16777216 and up the uint32_t is more precise ...
 // TODO: test accuracy decimals
@@ -190,7 +180,6 @@ void AD9850::setFrequencyF(float freq)
 //
 
 #define AD9851_REFCLK        0x01    // bit is a 6x multiplier bit P.14 datasheet
-
 
 void AD9851::setFrequency(uint32_t freq)
 {
@@ -217,7 +206,6 @@ void AD9851::setFrequency(uint32_t freq)
   _factor += _offset;
   writeData();
 }
-
 
 // from 16777216 and up the uint32_t is more precise..
 // TODO: test accuracy decimals
@@ -247,13 +235,11 @@ void AD9851::setFrequencyF(float freq)
   writeData();
 }
 
-
 void AD9851::setRefClockHigh()
 {
   _config |= AD9851_REFCLK;
   writeData();
 }
-
 
 void AD9851::setRefClockLow()
 {
@@ -261,12 +247,9 @@ void AD9851::setRefClockLow()
   writeData();
 }
 
-
 uint8_t AD9851::getRefClock()
 {
   return (_config & AD9851_REFCLK) ? 180 : 30;
 }
 
-
 // -- END OF FILE --
-

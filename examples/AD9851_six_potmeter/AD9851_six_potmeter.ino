@@ -21,14 +21,14 @@ void setup()
 
 void loop()
 {
-  float freq = readFreq();
+  float freq = readFreq(true);
 
   freqGen.setFrequencyF(freq);
   Serial.println(freq);
-  delay(100);
+  delay(1000);
 }
 
-float readFreq()
+float readFreq(bool KHZ)
 {
   float freq = 0;
   freq += (analogRead(A0) / 103) * 1000;
@@ -37,6 +37,8 @@ float readFreq()
   freq += (analogRead(A3) / 103) * 1;
   freq += (analogRead(A4) / 103) * 0.1;
   freq += (analogRead(A5) / 103) * 0.01;
+
+  if (KHZ) freq *= 1000;
   return freq;
 }
 
