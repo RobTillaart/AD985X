@@ -29,8 +29,8 @@ public:
   void     powerUp();
 
   void     setFrequency(uint32_t freq);        // 0..AD9850_MAX_FREQ
-  void     setFrequency(float freq);           // works best for lower frequencies.
-  uint32_t getFrequency() { return _freq; };   // only returns integer part of freq
+  void     setFrequencyF(float freq);           // works best for lower frequencies.
+  float    getFrequency() { return _freq; };
   uint32_t getFactor()    { return _factor; };
   uint32_t getMaxFrequency() { return AD9850_MAX_FREQ; };
 
@@ -54,7 +54,7 @@ protected:
   uint8_t  _clock   = 0;
   uint8_t  _select  = 0;
 
-  uint32_t _freq    = 1;
+  float    _freq    = 1;
   uint32_t _factor  = 0;
   uint8_t  _config  = 0;
   uint8_t  _reset   = 0;

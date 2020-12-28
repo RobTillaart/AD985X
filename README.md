@@ -47,7 +47,7 @@ MaxFrequency of the class used. For the AD9850 => 20 MHz, for the AD9851 => 70 M
   - Note that in the base class this function is virtual.
 - **setFrequencyF(float freq)** SetFrequencyF sets the frequency with float.
 - **getMaxFrequency()** returns the maximum frequency setable. For the AD9850 this is 20 MHz, for the AD9851 this is 70 MHz. Note that in the base class this function is virtual.
-- **getFrequency()** returns the - integer part of the - frequency set. 
+- **getFrequency()** returns the frequency set. As it returns a float it might loose some accuracy at higher digits.
 - **setPhase(uint8_t phase = 0)** set the phase in units of 11.25°  0..31 allowed. 
 Default it sets the phase to 0.
 - **getPhase()** returns the set phase.

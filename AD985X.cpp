@@ -173,7 +173,7 @@ void AD9850::setFrequency(uint32_t freq)
 
 // from 16777216 and up the uint32_t is more precise ...
 // TODO: test accuracy decimals
-void AD9850::setFrequency(float freq)
+void AD9850::setFrequencyF(float freq)
 {
   // freq OUT = (Δ Phase × CLKIN)/2^32
   // 64 bit math to keep precision to the max
@@ -221,7 +221,7 @@ void AD9851::setFrequency(uint32_t freq)
 
 // from 16777216 and up the uint32_t is more precise..
 // TODO: test accuracy decimals
-void AD9851::setFrequency(float freq)
+void AD9851::setFrequencyF(float freq)
 {
   if (freq > AD9851_MAX_FREQ) freq = AD9851_MAX_FREQ;
   // AUTO SWITCH REFERENCE FREQUENCY
