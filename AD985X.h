@@ -30,19 +30,19 @@ public:
 
   void     setFrequency(uint32_t freq);        // 0..AD9850_MAX_FREQ
   void     setFrequencyF(float freq);           // works best for lower frequencies.
-  float    getFrequency() { return _freq; };
-  uint32_t getFactor()    { return _factor; };
+  float    getFrequency()    { return _freq; };
   uint32_t getMaxFrequency() { return AD9850_MAX_FREQ; };
 
   // 0 .. 31  steps of 11.25 degrees
   void     setPhase(uint8_t phase = 0);
-  uint8_t  getPhase() { return (_config >> 3); };
+  uint8_t  getPhase()        { return (_config >> 3); };
 
-  // EXPERIMENTAL
   // offset to calibrate the frequency (internal counter)
   // offset must be stored by the user.
-  void     setCalibrationOffset(int32_t offset = 0) { _offset = offset; };
-  int32_t  getCalibrationOffset()  { return _offset; };
+  void     setCalibration(int32_t offset = 0) { _offset = offset; };
+  int32_t  getCalibration()  { return _offset; };
+  // internal chip factor used for frequency.
+  uint32_t getFactor()       { return _factor; };
 
 protected:
   void     pulsePin(uint8_t pin);
