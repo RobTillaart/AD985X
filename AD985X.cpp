@@ -69,7 +69,7 @@ void AD9850::reset()
   if (_useHW) pulsePin(SPI_CLOCK);
   else pulsePin(_clock);
 
-  _config = 0;    // 0 phase   no powerdown   30 MHz
+  _config = 0;    // 0 phase   no powerdown
   _freq   = 0;
   _factor = 0;
   _offset = 0;
@@ -84,7 +84,7 @@ void AD9850::powerDown()
 
 void AD9850::powerUp()
 {
-  _config &= ~AD985X_POWERDOWN;      // TODO MAGIC NR.
+  _config &= ~AD985X_POWERDOWN;
   writeData();
 }
 
@@ -159,20 +159,21 @@ void AD9850::setFrequency(uint32_t freq)
   // freq OUT = (Δ Phase × CLKIN)/2^32
   // 64 bit math to keep precision to the max
   if (freq > AD9850_MAX_FREQ) freq = AD9850_MAX_FREQ;
-  _factor = (147573952590ULL * freq) >> 32;  //  (1 << 64) / 125000000
+  // _factor = round(freq * 34.359738368); // 4294967296 / 125000000
+  _factor = (147573952589ULL * freq) >> 32;
   _freq = freq;
   _factor += _offset;
   writeData();
 }
 
-// from 16777216 and up the uint32_t is more precise ...
+// especially for lower frequencies (with decimals)
 // TODO: test accuracy decimals
 void AD9850::setFrequencyF(float freq)
 {
   // freq OUT = (Δ Phase × CLKIN)/2^32
   // 64 bit math to keep precision to the max
   if (freq > AD9850_MAX_FREQ) freq = AD9850_MAX_FREQ;
-  _factor = uint64_t(147573952590ULL * freq) >> 32;  //  (1 << 64) / 125000000
+  _factor = round(freq * 34.359738368);   // 4294967296 / 125000000
   _freq = freq;
   _factor += _offset;
   writeData();
@@ -211,7 +212,7 @@ void AD9851::setFrequency(uint32_t freq)
   writeData();
 }
 
-// from 16777216 and up the uint32_t is more precise..
+// especially for lower frequencies (with decimals)
 // TODO: test accuracy decimals
 void AD9851::setFrequencyF(float freq)
 {
@@ -232,8 +233,9 @@ void AD9851::setFrequencyF(float freq)
   }
   else                          // 1x 30 = 30 MHz
   {
-    _factor = uint64_t(614891469123ULL * freq) >> 32;  //  (1 << 64) / 30000000
+    _factor = (6148914691ULL * uint64_t (100 * freq)) >> 32;
   }
+
   _freq = freq;
   _factor += _offset;
   writeData();

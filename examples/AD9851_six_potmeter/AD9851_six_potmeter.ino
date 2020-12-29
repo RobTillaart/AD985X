@@ -4,7 +4,6 @@
 // VERSION: 0.1.0
 // PURPOSE: demo
 
-
 #include "AD985X.h"
 
 AD9851 freqGen; 
@@ -16,7 +15,7 @@ void setup()
   Serial.print("AD985X_LIB_VERSION: \t");
   Serial.println(AD985X_LIB_VERSION);
 
-  freqGen.begin(10, 9, 8);
+  freqGen.begin(10, 9, 8, 7, 6);
 }
 
 void loop()

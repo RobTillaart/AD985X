@@ -14,7 +14,7 @@
 
 #define AD985X_LIB_VERSION "0.2.0"
 
-#define AD9850_MAX_FREQ      (20UL * 1000UL * 1000UL)
+#define AD9850_MAX_FREQ      (40UL * 1000UL * 1000UL)
 #define AD9851_MAX_FREQ      (70UL * 1000UL * 1000UL)
 
 class AD9850
