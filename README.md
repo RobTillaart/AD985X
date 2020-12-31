@@ -54,13 +54,6 @@ For the AD9851 this is 70 MHz.
 Default it sets the phase to 0.
 - **getPhase()** returns the phase set, 0 by default.
 
-#### Experimental
-
-- **setCalibrationOffset(int32_t offset = 0)** sets an offset to calibrate the frequency.
-- **getCalibrationOffset()** reads back the offset set.
-- Note: **reset()** resets the offset too.
-- Note: setting the offset reduces the range of frequencies (at the ends of scale).
-
 ### AD9850 specific
 
 The AD9850 has no specific functions.
@@ -70,16 +63,20 @@ The AD9850 has no specific functions.
 - **setRefClockHigh()** set reference clock to 180 Mhz.
 - **setRefClockLow()**  set reference clock to 30 Mhz.
 - **getRefClock()** returns 30 or 180.
-
-#### Experimental
-
 - **setAutoRefClock(bool arc)** sets a flag so the library switches automatically
-to the reference clock of 180 MHz when the frequency is set above 1 MHz and 
-to 30 MHz when the frequency is set to 1 MHz or lower.
+to the reference clock of 180 MHz when the frequency is set above 10 MHz and 
+to 30 MHz when the frequency is set to 10 MHz or lower.
 - **getAutoRefClock()** returns true is automode is set. 
-Default is **false** == OFF for backwards compatibility. 
+The default value is **false** == OFF for backwards compatibility. 
 - Note: the autoRefClock mode does **NOT** automatically adjust the calibration offset.
 - Note: **reset()** does **NOT** reset the autoRefClock flag.
+
+#### AD9850 and AD9851 Experimental
+
+- **setCalibrationOffset(int32_t offset = 0)** sets an offset to calibrate the frequency.
+- **getCalibrationOffset()** reads back the offset set.
+- Note: **reset()** resets the offset to 0..
+- Note: setting the offset reduces the range of frequencies (at the ends of scale).
 
 ## Operation
 

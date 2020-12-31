@@ -118,7 +118,7 @@ void AD9850::writeData()
     data >>= 8;
     SPI.transfer(data & 0xFF);
     SPI.transfer(data >> 8);
-    SPI.transfer(_config);
+    SPI.transfer(_config & 0xFD);  // mask factory test bit
 
     digitalWrite(_select, HIGH);
     SPI.endTransaction();
@@ -133,12 +133,13 @@ void AD9850::writeData()
     data >>= 8;
     swSPI_transfer(data & 0xFF);
     swSPI_transfer(data >> 8);
-    swSPI_transfer(_config);
+    swSPI_transfer(_config & 0xFD);  // mask factory test bit
 
     digitalWrite(_select, HIGH);
   }
 
   // update frequency + phase + control bits.
+  // should at least be 4 ns delay - P14 datasheet
   pulsePin(_fqud);
 }
 
@@ -188,15 +189,20 @@ void AD9850::setFrequencyF(float freq)
 
 void AD9851::setFrequency(uint32_t freq)
 {
+  // PREVENT OVERFLOW
   if (freq > AD9851_MAX_FREQ) freq = AD9851_MAX_FREQ;
+
   // AUTO SWITCH REFERENCE FREQUENCY
-  if (_autoRefClock && (freq > 1000000))
+  if (_autoRefClock)
   {
-    _config |= AD9851_REFCLK;
-  }
-  else
-  {
-    _config &= ~AD9851_REFCLK;
+    if (freq > 10000000)
+    {
+      _config |= AD9851_REFCLK;
+    }
+    else
+    {
+      _config &= ~AD9851_REFCLK;
+    }
   }
 
   if (_config & AD9851_REFCLK)  // 6x 30 = 180 MHz
@@ -216,15 +222,20 @@ void AD9851::setFrequency(uint32_t freq)
 // TODO: test accuracy decimals
 void AD9851::setFrequencyF(float freq)
 {
+  // PREVENT OVERFLOW
   if (freq > AD9851_MAX_FREQ) freq = AD9851_MAX_FREQ;
+
   // AUTO SWITCH REFERENCE FREQUENCY
-  if (_autoRefClock && (freq > 1000000))
+  if (_autoRefClock)
   {
-    _config |= AD9851_REFCLK;
-  }
-  else
-  {
-    _config &= ~AD9851_REFCLK;
+    if (freq > 10000000)
+    {
+      _config |= AD9851_REFCLK;
+    }
+    else
+    {
+      _config &= ~AD9851_REFCLK;
+    }
   }
 
   if (_config & AD9851_REFCLK)  // 6x 30 = 180 MHz
@@ -241,16 +252,22 @@ void AD9851::setFrequencyF(float freq)
   writeData();
 }
 
+void AD9851::setAutoRefClock(bool arc)
+{
+  _autoRefClock = arc;
+  setFrequency(_freq);
+};
+
 void AD9851::setRefClockHigh()
 {
   _config |= AD9851_REFCLK;
-  writeData();
+  setFrequency(_freq);
 }
 
 void AD9851::setRefClockLow()
 {
   _config &= ~AD9851_REFCLK;
-  writeData();
+  setFrequency(_freq);
 }
 
 uint8_t AD9851::getRefClock()

@@ -73,7 +73,7 @@ public:
   void     setRefClockHigh();   // 180 MHz
   void     setRefClockLow();    //  30 MHz
   uint8_t  getRefClock();
-  void     setAutoRefClock(bool arc) { _autoRefClock = arc; };
+  void     setAutoRefClock(bool arc);
   bool     getAutoRefClock()  { return _autoRefClock; };
 
 protected:
