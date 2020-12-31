@@ -133,8 +133,12 @@ unittest(test_ad9851_autoRefClock)
     fprintf(stderr, "freq %ld\t", freq);
     assertEqual(30, funcgen.getRefClock());
   }
-  funcgen.setFrequency(7000000);
-  fprintf(stderr, "freq 7000000\t");
+
+  funcgen.setFrequency(10000000);
+  fprintf(stderr, "freq 10000000\t");
+  assertEqual(30, funcgen.getRefClock());
+  funcgen.setFrequency(100000001);
+  fprintf(stderr, "freq 100000001\t");
   assertEqual(180, funcgen.getRefClock());
   funcgen.setFrequency(70000000);
   fprintf(stderr, "freq 70000000\t");
