@@ -21,6 +21,12 @@
 
 #include <ArduinoUnitTests.h>
 
+
+#define assertEqualFloat(arg1, arg2, arg3)  assertOp("assertEqualFloat", "expected", fabs(arg1 - arg2), compareLessOrEqual, "<=", "actual", arg3)
+#define assertEqualINF(arg)  assertOp("assertEqualINF", "expected", INFINITY, compareEqual, "==", "actual", arg)
+#define assertEqualNAN(arg)  assertOp("assertEqualNAN", "expected", true, compareEqual, "==", "actual", isnan(arg))
+
+
 #include "Arduino.h"
 #include "AD985X.h"
 
@@ -36,6 +42,7 @@ unittest_teardown()
 
 unittest(test_constructor)
 {
+  fprintf(stderr, "VERSION: %s\n", AD985X_LIB_VERSION);
   AD9850 funcgen0;
   AD9851 funcgen1;
 
@@ -47,6 +54,7 @@ unittest(test_constructor)
 unittest(test_ad9850)
 {
   AD9850 funcgen;
+  funcgen.begin(4, 5, 6);
 
   funcgen.setFrequency(1000);
   long freq = funcgen.getFrequency();
@@ -64,7 +72,8 @@ unittest(test_ad9850)
 unittest(test_ad9851)
 {
   AD9851 funcgen;
-
+  funcgen.begin(4, 5, 6);
+  
   funcgen.setFrequency(1000);
   long freq = funcgen.getFrequency();
   assertEqual(1000, freq);
@@ -86,7 +95,8 @@ unittest(test_ad9851)
 unittest(test_ad9851_reset)
 {
   AD9851 funcgen;
-
+  funcgen.begin(4, 5, 6);
+  
   funcgen.setFrequency(1000);
   assertEqual(1000, funcgen.getFrequency());
   funcgen.setPhase(14);
@@ -100,6 +110,75 @@ unittest(test_ad9851_reset)
   assertEqual(0,  funcgen.getPhase());
   assertEqual(30, funcgen.getRefClock());
 }
+
+
+unittest(test_ad9851_autoRefClock)
+{
+  AD9851 funcgen;
+  funcgen.begin(4, 5, 6);
+
+  assertFalse(funcgen.getAutoRefClock());
+  for (uint32_t freq = 70; freq <= 70000000; freq *= 10)
+  {
+    funcgen.setFrequency(freq);
+    fprintf(stderr, "freq %ld\t", freq);
+    assertEqual(30, funcgen.getRefClock());
+  }
+
+  funcgen.setAutoRefClock(true);
+  assertTrue(funcgen.getAutoRefClock());
+  for (uint32_t freq = 70; freq <= 1000000; freq *= 10)
+  {
+    funcgen.setFrequency(freq);
+    fprintf(stderr, "freq %ld\t", freq);
+    assertEqual(30, funcgen.getRefClock());
+  }
+
+  funcgen.setFrequency(10000000);
+  fprintf(stderr, "freq 10000000\t");
+  assertEqual(30, funcgen.getRefClock());
+  funcgen.setFrequency(100000001);
+  fprintf(stderr, "freq 100000001\t");
+  assertEqual(180, funcgen.getRefClock());
+  funcgen.setFrequency(70000000);
+  fprintf(stderr, "freq 70000000\t");
+  assertEqual(180, funcgen.getRefClock());
+}
+
+
+unittest(test_ad9851_offset)
+{
+  AD9851 funcgen;
+  funcgen.begin(4, 5, 6);
+
+  assertEqual(0, funcgen.getCalibration());
+  funcgen.setFrequency(1000000);
+  assertEqual(1000000, funcgen.getFrequency());
+  for (int32_t offset = -1000; offset <= 1000; offset += 100)
+  {
+    funcgen.setCalibration(offset);
+    fprintf(stderr, "offset %d\t", offset);
+    assertEqual(offset, funcgen.getCalibration());
+  }
+  assertEqual(1000000, funcgen.getFrequency());
+
+  funcgen.setCalibration();
+  assertEqual(0, funcgen.getCalibration());
+}
+
+unittest(test_ad9851_float_freq)
+{
+  AD9851 funcgen;
+  funcgen.begin(4, 5, 6);
+
+  for (float f = 100.0; f < 110.0; f += 0.1)
+  {
+    funcgen.setFrequencyF(f);
+    fprintf(stderr, "%ld\t", funcgen.getFactor());
+    assertEqualFloat(f, funcgen.getFrequency(), 1.0);
+  }
+}
+
 
 unittest_main()
 

@@ -1,5 +1,5 @@
 //
-//    FILE: AD9851_demo.ino
+//    FILE: AD9851_demo_float.ino
 //  AUTHOR: Rob Tillaart
 // VERSION: 0.2.0
 // PURPOSE: demo
@@ -44,9 +44,6 @@ void loop()
     case 'P' :
       freqGen.powerDown();
       break;
-    case 'U' :
-      freqGen.powerUp();
-      break;
     case '+' :
       freq += 1;
       break;
@@ -67,7 +64,7 @@ void loop()
   if (prev != freq)
   {
     prev = freq;
-    freqGen.setFrequency(freq);
+    freqGen.setFrequency(freq * 0.01);
     Serial.println(freq);
   }
 }
@@ -75,14 +72,13 @@ void loop()
 void help()
 {
   Serial.println();
-  Serial.println("+ :  f = f + 1");
-  Serial.println("- :  f = f - 1");
+  Serial.println("+ :  f = f + 0.01");
+  Serial.println("- :  f = f - 0.01");
   Serial.println("* :  f = f * 10");
   Serial.println("/ :  f = f / 10");
   Serial.println("? :  help");
-  Serial.println("R :  AD9851 reset");
-  Serial.println("P :  AD9851 power down");
-  Serial.println("U :  AD9851 power up");
+  Serial.println("R :  reset AD985X");
+  Serial.println("P :  power down AD985X");
   Serial.println();
 }
 

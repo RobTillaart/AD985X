@@ -4,18 +4,13 @@
 // VERSION: 0.1.0
 // PURPOSE: demo
 
-
 #include "AD985X.h"
-
-#define MAX_FREQ  10000000UL
-
-uint32_t start;
-uint32_t stop;
 
 AD9851 freqGen;
 
 uint32_t freq = 0;
 uint32_t prev = 0;
+uint32_t maxFreq;
 
 void setup()
 {
@@ -24,11 +19,15 @@ void setup()
   Serial.print("AD985X_LIB_VERSION: \t");
   Serial.println(AD985X_LIB_VERSION);
 
-  freqGen.begin(10, 9, 8);
+  help();
+
+  freqGen.begin(10, 9, 8, 7, 6);
+  freqGen.powerUp();
+  maxFreq = freqGen.getMaxFrequency();
+  Serial.print(" MAX_FREQ: ");
+  Serial.println(maxFreq);
   Serial.print("REF_CLOCK: ");
   Serial.println(freqGen.getRefClock());
-
-  help();
 }
 
 void loop()
@@ -51,6 +50,21 @@ void loop()
         break;
       case 'P' :
         freqGen.powerDown();
+        break;
+      case 'U' :
+        freqGen.powerUp();
+        break;
+      case 'A' :
+        freqGen.setAutoRefClock(true);
+        Serial.println("REF_CLOCK: AUTO ON");
+        break;
+      case 'C' :
+        freqGen.setAutoRefClock(false);
+        Serial.println("REF_CLOCK: AUTO OFF");
+        break;
+      case 'G' :
+        Serial.print("REF_CLOCK: ");
+        Serial.println(freqGen.getRefClock());
         break;
       case 'H' :
         freqGen.setRefClockHigh();
@@ -75,7 +89,7 @@ void loop()
         freq /= 10;
         break;
     }
-    if (freq > MAX_FREQ) freq = MAX_FREQ;
+    if (freq > maxFreq) freq = maxFreq;
   }
 
   // UPDATE AD985X IF NEW VALUE
@@ -86,6 +100,7 @@ void loop()
     freqGen.setFrequency(freq);
     freq = freqGen.getFrequency();
     Serial.println(freq);
+    // printFreq(freq);
   }
 }
 
@@ -98,11 +113,33 @@ void help()
   Serial.println("* :  freq = freq * 10");
   Serial.println("/ :  freq = freq / 10");
   Serial.println("? :  help");
-  Serial.println("R :  AD985X reset");
-  Serial.println("P :  AD985X power down");
-  Serial.println("H :  AD985X set reference clock HIGH");
-  Serial.println("L :  AD985X set reference clock LOW");
+  Serial.println("R :  AD9851 reset");
+  Serial.println("P :  AD9851 power down");
+  Serial.println("U :  AD9851 power up");
+  Serial.println("A :  AD9851 set reference clock AUTO ON");
+  Serial.println("C :  AD9851 set reference clock AUTO OFF");
+  Serial.println("G :  AD9851 print reference clock");
+  Serial.println("H :  AD9851 set reference clock HIGH");
+  Serial.println("L :  AD9851 set reference clock LOW");
   Serial.println();
 }
 
+void printFreq(float freq)
+{
+  if (freq > 1000000)
+  {
+    Serial.print(freq / 1e6, 2);
+    Serial.println(" MHz");
+    return;
+  }
+
+  if (freq > 1000)
+  {
+    Serial.print(freq / 1e3, 2);
+    Serial.println(" KHz");
+    return;
+  }
+  Serial.print(freq, 2);
+  Serial.println(" Hz");
+}
 // END OF FILE

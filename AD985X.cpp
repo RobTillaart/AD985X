@@ -1,20 +1,18 @@
 //
 //    FILE: AD985X.cpp
 //  AUTHOR: Rob Tillaart
-// VERSION: 0.1.1
+// VERSION: 0.2.0
 //    DATE: 2019-02-08
-// PURPOSE: Class for AD9851 function generator
+// PURPOSE: Class for AD9850 and AD9851 function generator
 //
-// HISTORY:
-// 0.1.0   2019-03-19 initial version
-// 0.1.1   2020-12-09 add arduino-ci
-//
+//  HISTORY:
+//  0.1.0   2019-03-19  initial version
+//  0.1.1   2020-12-09  add arduino-ci
+//  0.1.2   2020-12-27  add setAutoMode() + offset
+//  0.2.0   2020-12-28  major refactor class hierarchy + float frequency
 
 #include "AD985X.h"
 
-/* TODO
-https://github.com/cjheath/AD9851/blob/master/AD9851.h
-*/
 
 // UNO HARDWARE SPI           PINS
 #define SPI_CLOCK             13
@@ -23,12 +21,16 @@ https://github.com/cjheath/AD9851/blob/master/AD9851.h
 
 #define AD985X_POWERDOWN      0x04
 
+////////////////////////////////////////////////////////
+//
+// AD9850
+//
 
-AD985X::AD985X()
+AD9850::AD9850()
 {
 }
 
-void AD985X::begin(int select, int resetPin, int FQUDPin, int dataOut , int clock)
+void AD9850::begin(int select, int resetPin, int FQUDPin, int dataOut , int clock)
 {
   _select = select;
   _reset  = resetPin;
@@ -61,31 +63,32 @@ void AD985X::begin(int select, int resetPin, int FQUDPin, int dataOut , int cloc
   reset();
 }
 
-void AD985X::reset()
+void AD9850::reset()
 {
   pulsePin(_reset);
   if (_useHW) pulsePin(SPI_CLOCK);
   else pulsePin(_clock);
 
-  _config = 0;    // 0 phase   no powerdown   30 MHz
+  _config = 0;    // 0 phase   no powerdown
   _freq   = 0;
   _factor = 0;
+  _offset = 0;
   writeData();
 }
 
-void AD985X::powerDown()
+void AD9850::powerDown()
 {
   _config |= AD985X_POWERDOWN;      // keep phase and REFCLK as is.
   writeData();
 }
 
-void AD985X::powerUp()
+void AD9850::powerUp()
 {
-  _config &= ~AD985X_POWERDOWN;      // TODO MAGIC NR.
+  _config &= ~AD985X_POWERDOWN;
   writeData();
 }
 
-void AD985X::setPhase(uint8_t phase)
+void AD9850::setPhase(uint8_t phase)
 {
   if (phase > 31) return;
   _config &= 0x07;
@@ -93,13 +96,13 @@ void AD985X::setPhase(uint8_t phase)
   writeData();
 }
 
-void AD985X::pulsePin(uint8_t pin)
+void AD9850::pulsePin(uint8_t pin)
 {
   digitalWrite(pin, HIGH);
   digitalWrite(pin, LOW);
 }
 
-void AD985X::writeData()
+void AD9850::writeData()
 {
   // Serial.println(_factor, HEX);
   // Serial.println(_config, HEX);
@@ -115,7 +118,7 @@ void AD985X::writeData()
     data >>= 8;
     SPI.transfer(data & 0xFF);
     SPI.transfer(data >> 8);
-    SPI.transfer(_config);
+    SPI.transfer(_config & 0xFD);  // mask factory test bit
 
     digitalWrite(_select, HIGH);
     SPI.endTransaction();
@@ -130,17 +133,18 @@ void AD985X::writeData()
     data >>= 8;
     swSPI_transfer(data & 0xFF);
     swSPI_transfer(data >> 8);
-    swSPI_transfer(_config);
+    swSPI_transfer(_config & 0xFD);  // mask factory test bit
 
     digitalWrite(_select, HIGH);
   }
 
   // update frequency + phase + control bits.
+  // should at least be 4 ns delay - P14 datasheet
   pulsePin(_fqud);
 }
 
 // simple one mode version
-void AD985X::swSPI_transfer(uint8_t value)
+void AD9850::swSPI_transfer(uint8_t value)
 {
   // for (uint8_t mask = 0x80; mask; mask >>= 1)   // MSBFIRST
   for (uint8_t mask = 0x01; mask; mask <<= 1)   // LSBFIRST
@@ -151,21 +155,28 @@ void AD985X::swSPI_transfer(uint8_t value)
   }
 }
 
-
-
-////////////////////////////////////////////////////////
-//
-// AD9850
-//
-
 void AD9850::setFrequency(uint32_t freq)
 {
   // freq OUT = (Δ Phase × CLKIN)/2^32
   // 64 bit math to keep precision to the max
+  if (freq > AD9850_MAX_FREQ) freq = AD9850_MAX_FREQ;
+  // _factor = round(freq * 34.359738368); // 4294967296 / 125000000
+  _factor = (147573952589ULL * freq) >> 32;
   _freq = freq;
-  if (_freq > AD9850_MAX_FREQ) _freq = AD9850_MAX_FREQ;
+  _factor += _offset;
+  writeData();
+}
 
-  _factor = (147573952590ULL * _freq) >> 32;  //  (1 << 64) / 125000000
+// especially for lower frequencies (with decimals)
+// TODO: test accuracy decimals
+void AD9850::setFrequencyF(float freq)
+{
+  // freq OUT = (Δ Phase × CLKIN)/2^32
+  // 64 bit math to keep precision to the max
+  if (freq > AD9850_MAX_FREQ) freq = AD9850_MAX_FREQ;
+  _factor = round(freq * 34.359738368);   // 4294967296 / 125000000
+  _freq = freq;
+  _factor += _offset;
   writeData();
 }
 
@@ -178,30 +189,85 @@ void AD9850::setFrequency(uint32_t freq)
 
 void AD9851::setFrequency(uint32_t freq)
 {
-  _freq = freq;
-  if (_freq > AD9851_MAX_FREQ) _freq = AD9851_MAX_FREQ;
+  // PREVENT OVERFLOW
+  if (freq > AD9851_MAX_FREQ) freq = AD9851_MAX_FREQ;
+
+  // AUTO SWITCH REFERENCE FREQUENCY
+  if (_autoRefClock)
+  {
+    if (freq > 10000000)
+    {
+      _config |= AD9851_REFCLK;
+    }
+    else
+    {
+      _config &= ~AD9851_REFCLK;
+    }
+  }
 
   if (_config & AD9851_REFCLK)  // 6x 30 = 180 MHz
   {
-    _factor = (102481911520ULL * _freq) >> 32;  //  (1 << 64) / 180000000
+    _factor = (102481911520ULL * freq) >> 32;  //  (1 << 64) / 180000000
   }
   else                          // 1x 30 = 30 MHz
   {
-    _factor = (614891469123ULL * _freq) >> 32;  //  (1 << 64) / 30000000
+    _factor = (614891469123ULL * freq) >> 32;  //  (1 << 64) / 30000000
   }
+  _freq = freq;
+  _factor += _offset;
   writeData();
 }
+
+// especially for lower frequencies (with decimals)
+// TODO: test accuracy decimals
+void AD9851::setFrequencyF(float freq)
+{
+  // PREVENT OVERFLOW
+  if (freq > AD9851_MAX_FREQ) freq = AD9851_MAX_FREQ;
+
+  // AUTO SWITCH REFERENCE FREQUENCY
+  if (_autoRefClock)
+  {
+    if (freq > 10000000)
+    {
+      _config |= AD9851_REFCLK;
+    }
+    else
+    {
+      _config &= ~AD9851_REFCLK;
+    }
+  }
+
+  if (_config & AD9851_REFCLK)  // 6x 30 = 180 MHz
+  {
+    _factor = uint64_t(102481911520ULL * freq) >> 32;  //  (1 << 64) / 180000000
+  }
+  else                          // 1x 30 = 30 MHz
+  {
+    _factor = (6148914691ULL * uint64_t (100 * freq)) >> 32;
+  }
+
+  _freq = freq;
+  _factor += _offset;
+  writeData();
+}
+
+void AD9851::setAutoRefClock(bool arc)
+{
+  _autoRefClock = arc;
+  setFrequency(_freq);
+};
 
 void AD9851::setRefClockHigh()
 {
   _config |= AD9851_REFCLK;
-  writeData();
+  setFrequency(_freq);
 }
 
 void AD9851::setRefClockLow()
 {
   _config &= ~AD9851_REFCLK;
-  writeData();
+  setFrequency(_freq);
 }
 
 uint8_t AD9851::getRefClock()
@@ -210,4 +276,3 @@ uint8_t AD9851::getRefClock()
 }
 
 // -- END OF FILE --
-

@@ -1,12 +1,12 @@
 //
-//    FILE: AD9851_demo.ino
+//    FILE: AD9850_demo_float.ino
 //  AUTHOR: Rob Tillaart
 // VERSION: 0.2.0
 // PURPOSE: demo
 
 #include "AD985X.h"
 
-AD9851 freqGen; 
+AD9850 freqGen;
 
 uint32_t freq = 0;
 uint32_t prev = 0;
@@ -32,33 +32,33 @@ void loop()
   if (Serial.available() > 0)
   {
     int c = Serial.read();
-    switch(c)
+    switch (c)
     {
-    case '?' :
-      help();
-      break;
-    case 'R' :
-      freqGen.reset();
-      freq = freqGen.getFrequency();
-      break;
-    case 'P' :
-      freqGen.powerDown();
-      break;
-    case 'U' :
-      freqGen.powerUp();
-      break;
-    case '+' :
-      freq += 1;
-      break;
-    case '-' :
-      freq -= 1;
-      break;
-    case '*' :
-      freq *= 10;
-      break;
-    case '/' :
-      freq /= 10;
-      break;
+      case '?' :
+        help();
+        break;
+      case 'R' :
+        freqGen.reset();
+        freq = freqGen.getFrequency();
+        break;
+      case 'P' :
+        freqGen.powerDown();
+        break;
+      case 'U' :
+        freqGen.powerUp();
+        break;
+      case '+' :
+        freq += 1;
+        break;
+      case '-' :
+        freq -= 1;
+        break;
+      case '*' :
+        freq *= 10;
+        break;
+      case '/' :
+        freq /= 10;
+        break;
     }
     if (freq > maxFreq) freq = maxFreq;
   }
@@ -67,7 +67,7 @@ void loop()
   if (prev != freq)
   {
     prev = freq;
-    freqGen.setFrequency(freq);
+    freqGen.setFrequencyF(freq * 0.01);
     Serial.println(freq);
   }
 }
@@ -75,14 +75,14 @@ void loop()
 void help()
 {
   Serial.println();
-  Serial.println("+ :  f = f + 1");
-  Serial.println("- :  f = f - 1");
+  Serial.println("+ :  f = f + 0.01");
+  Serial.println("- :  f = f - 0.01");
   Serial.println("* :  f = f * 10");
   Serial.println("/ :  f = f / 10");
   Serial.println("? :  help");
-  Serial.println("R :  AD9851 reset");
-  Serial.println("P :  AD9851 power down");
-  Serial.println("U :  AD9851 power up");
+  Serial.println("R :  AD9850 reset");
+  Serial.println("P :  AD9850 power down");
+  Serial.println("U :  AD9850 power up");
   Serial.println();
 }
 
