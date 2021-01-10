@@ -10,6 +10,9 @@
 //  0.1.1   2020-12-09  add arduino-ci
 //  0.1.2   2020-12-27  add setAutoMode() + offset
 //  0.2.0   2020-12-28  major refactor class hierarchy + float frequency
+//  0.2.1   2021-01-10  add get- and setARCCutOffFreq()
+// 
+
 
 #include "AD985X.h"
 
@@ -19,7 +22,9 @@
 #define SPI_MISO              12
 #define SPI_MOSI              11
 
+
 #define AD985X_POWERDOWN      0x04
+
 
 ////////////////////////////////////////////////////////
 //
@@ -29,6 +34,7 @@
 AD9850::AD9850()
 {
 }
+
 
 void AD9850::begin(int select, int resetPin, int FQUDPin, int dataOut , int clock)
 {
@@ -63,6 +69,7 @@ void AD9850::begin(int select, int resetPin, int FQUDPin, int dataOut , int cloc
   reset();
 }
 
+
 void AD9850::reset()
 {
   pulsePin(_reset);
@@ -76,17 +83,20 @@ void AD9850::reset()
   writeData();
 }
 
+
 void AD9850::powerDown()
 {
   _config |= AD985X_POWERDOWN;      // keep phase and REFCLK as is.
   writeData();
 }
 
+
 void AD9850::powerUp()
 {
   _config &= ~AD985X_POWERDOWN;
   writeData();
 }
+
 
 void AD9850::setPhase(uint8_t phase)
 {
@@ -96,11 +106,13 @@ void AD9850::setPhase(uint8_t phase)
   writeData();
 }
 
+
 void AD9850::pulsePin(uint8_t pin)
 {
   digitalWrite(pin, HIGH);
   digitalWrite(pin, LOW);
 }
+
 
 void AD9850::writeData()
 {
@@ -143,6 +155,7 @@ void AD9850::writeData()
   pulsePin(_fqud);
 }
 
+
 // simple one mode version
 void AD9850::swSPI_transfer(uint8_t value)
 {
@@ -154,6 +167,7 @@ void AD9850::swSPI_transfer(uint8_t value)
     digitalWrite(_clock, LOW);
   }
 }
+
 
 void AD9850::setFrequency(uint32_t freq)
 {
@@ -167,6 +181,7 @@ void AD9850::setFrequency(uint32_t freq)
   writeData();
 }
 
+
 // especially for lower frequencies (with decimals)
 // TODO: test accuracy decimals
 void AD9850::setFrequencyF(float freq)
@@ -179,6 +194,7 @@ void AD9850::setFrequencyF(float freq)
   _factor += _offset;
   writeData();
 }
+
 
 ////////////////////////////////////////////////////////
 //
@@ -195,7 +211,7 @@ void AD9851::setFrequency(uint32_t freq)
   // AUTO SWITCH REFERENCE FREQUENCY
   if (_autoRefClock)
   {
-    if (freq > 10000000)
+    if (freq > _ARCCutOffFreq)
     {
       _config |= AD9851_REFCLK;
     }
@@ -218,8 +234,8 @@ void AD9851::setFrequency(uint32_t freq)
   writeData();
 }
 
+
 // especially for lower frequencies (with decimals)
-// TODO: test accuracy decimals
 void AD9851::setFrequencyF(float freq)
 {
   // PREVENT OVERFLOW
@@ -228,7 +244,7 @@ void AD9851::setFrequencyF(float freq)
   // AUTO SWITCH REFERENCE FREQUENCY
   if (_autoRefClock)
   {
-    if (freq > 10000000)
+    if (freq > _ARCCutOffFreq)
     {
       _config |= AD9851_REFCLK;
     }
@@ -252,11 +268,17 @@ void AD9851::setFrequencyF(float freq)
   writeData();
 }
 
+
+////////////////////////////////////////////////////////
+//
+// AD9851 - AUTO REFERENCE CLOCK
+//
 void AD9851::setAutoRefClock(bool arc)
 {
   _autoRefClock = arc;
   setFrequency(_freq);
 };
+
 
 void AD9851::setRefClockHigh()
 {
@@ -264,15 +286,23 @@ void AD9851::setRefClockHigh()
   setFrequency(_freq);
 }
 
+
 void AD9851::setRefClockLow()
 {
   _config &= ~AD9851_REFCLK;
   setFrequency(_freq);
 }
 
+
 uint8_t AD9851::getRefClock()
 {
   return (_config & AD9851_REFCLK) ? 180 : 30;
 }
+
+void AD9851::setARCCutOffFreq(uint32_t Hz = 10000000UL )
+{
+  if (Hz > 30000000UL) Hz = 30000000;
+  _ARCCutOffFreq = Hz
+};
 
 // -- END OF FILE --

@@ -9,19 +9,23 @@ begin	KEYWORD2
 reset	KEYWORD2
 powerDown	KEYWORD2
 powerUp	KEYWORD2
+
+setFrequencyF	KEYWORD2
 setFrequency	KEYWORD2
 getFrequency	KEYWORD2
+
 setPhase	KEYWORD2
 getPhase	KEYWORD2
+
 setRefClockHigh	KEYWORD2
 setRefClockLow	KEYWORD2
 getRefClock	KEYWORD2
 
-# Experimental
 setAutoRefClock	KEYWORD2
 getAutoRefClock	KEYWORD2
-setCalibration	KEYWORD2
-getCalibration	KEYWORD2
+setARCCutOffFreq	KEYWORD2
+getARCCutOffFreq	KEYWORD2
+
 
 # Instances (KEYWORD2)
 

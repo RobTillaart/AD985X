@@ -2,7 +2,7 @@
 //
 //    FILE: AD985X.h
 //  AUTHOR: Rob Tillaart
-// VERSION: 0.2.0
+// VERSION: 0.2.1
 //    DATE: 2019-02-08
 // PURPOSE: Class for AD9850 and AD9851 function generator
 //
@@ -12,10 +12,13 @@
 #include "Arduino.h"
 #include "SPI.h"
 
-#define AD985X_LIB_VERSION "0.2.0"
+
+#define AD985X_LIB_VERSION "0.2.1"
+
 
 #define AD9850_MAX_FREQ      (40UL * 1000UL * 1000UL)
 #define AD9851_MAX_FREQ      (70UL * 1000UL * 1000UL)
+
 
 class AD9850
 {
@@ -73,11 +76,18 @@ public:
   void     setRefClockHigh();   // 180 MHz
   void     setRefClockLow();    //  30 MHz
   uint8_t  getRefClock();
+
   void     setAutoRefClock(bool arc);
   bool     getAutoRefClock()  { return _autoRefClock; };
 
+  // 10 MHz is default, set in Hz.
+  // will be kept <= 30 MHz as that is the freq of LOW mode.
+  void     setARCCutOffFreq(uint32_t Hz = 10000000UL );
+  void     getARCCutOffFreq() { return _ARCCutOffFreq; };
+
 protected:
   bool     _autoRefClock = false;
+  uint32_t _ARCCutOffFreq = 10000000UL;
 
 };
 

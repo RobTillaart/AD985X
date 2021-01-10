@@ -22,7 +22,33 @@ way more functionality.
 
 ## Connection
 
-TODO
+TO elaborate
+
+```
+          TOP VIEW
+        +-----------+
+        |   X-TAL   |
+        |         L |
+    VCC | o       o | VCC
+    CLK | o       o | D0
+   PUFD | o       o | D1
+   DATA | o       o | D2
+  RESET | o       o | D3
+    GND | o CCC   o | D4
+  QOUT1 | o CCC   o | D5
+  QOUT2 | o       o | D6
+  ZOUT1 | o       o | D7 ----- SELECT SERIAL LOW
+  ZOUT2 | o  PP   o | GND
+        |    PP     |
+        +-----------+
+
+  XTAL = crystal
+  L    = LED
+  C    = chip
+  P    = potmeter => for duty cycle square wave
+
+```
+
 
 ## Interface
 
@@ -30,6 +56,7 @@ TODO
 
 - **AD9850()** 40 MHz signal generator
 - **AD9851()** 70 MHz signal generator, derived from AD9850 with some extra options.
+
 
 ### Common interface
 
@@ -54,9 +81,11 @@ For the AD9851 this is 70 MHz.
 Default it sets the phase to 0.
 - **getPhase()** returns the phase set, 0 by default.
 
+
 ### AD9850 specific
 
 The AD9850 has no specific functions.
+
 
 ### AD9851 specific
 
@@ -66,21 +95,20 @@ The AD9850 has no specific functions.
 - **setAutoRefClock(bool arc)** sets a flag so the library switches automatically
 to the reference clock of 180 MHz when the frequency is set above 10 MHz and 
 to 30 MHz when the frequency is set to 10 MHz or lower.
+The initial value is **false** == OFF for backwards compatibility. 
 - **getAutoRefClock()** returns true is automode is set. 
-The default value is **false** == OFF for backwards compatibility. 
+- **void setARCCutOffFreq(uint32_t Hz = 10000000UL )** set cut off ferquency for the auto reference clock. max value is 30 MHz, typical 10MHz
+- **uint32_t getARCCutOffFreq()** returns cut off frequency set.
+
+
 - Note: the autoRefClock mode does **NOT** automatically adjust the calibration offset.
 - Note: **reset()** does **NOT** reset the autoRefClock flag.
 
-#### AD9850 and AD9851 Experimental
-
-- **setCalibrationOffset(int32_t offset = 0)** sets an offset to calibrate the frequency.
-- **getCalibrationOffset()** reads back the offset set.
-- Note: **reset()** resets the offset to 0..
-- Note: setting the offset reduces the range of frequencies (at the ends of scale).
 
 ## Operation
 
 See examples
+
 
 ### Operational notes
 
