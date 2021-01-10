@@ -83,7 +83,7 @@ public:
   // 10 MHz is default, set in Hz.
   // will be kept <= 30 MHz as that is the freq of LOW mode.
   void     setARCCutOffFreq(uint32_t Hz = 10000000UL );
-  void     getARCCutOffFreq() { return _ARCCutOffFreq; };
+  uint32_t getARCCutOffFreq() { return _ARCCutOffFreq; };
 
 protected:
   bool     _autoRefClock = false;

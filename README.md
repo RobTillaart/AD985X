@@ -82,10 +82,20 @@ Default it sets the phase to 0.
 - **getPhase()** returns the phase set, 0 by default.
 
 
+### Calibration
+
+**Warning:** use with care.
+
+- **void setCalibrationOffset(int32_t offset = 0)** sets an offset to calibrate the frequency.
+- **uint32_t getCalibrationOffset()** reads back the offset set.
+- **uint32_t getFactor()** internal factor, for debugging
+
+Note: reset() resets the offset to 0..
+Note: setting the offset reduces the range of frequencies (at the ends of scale).
+
 ### AD9850 specific
 
 The AD9850 has no specific functions.
-
 
 ### AD9851 specific
 

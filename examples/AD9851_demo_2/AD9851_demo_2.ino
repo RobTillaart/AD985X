@@ -4,13 +4,16 @@
 // VERSION: 0.1.0
 // PURPOSE: demo
 
+
 #include "AD985X.h"
+
 
 AD9851 freqGen;
 
 uint32_t freq = 0;
 uint32_t prev = 0;
 uint32_t maxFreq;
+
 
 void setup()
 {
@@ -29,6 +32,7 @@ void setup()
   Serial.print("REF_CLOCK: ");
   Serial.println(freqGen.getRefClock());
 }
+
 
 void loop()
 {
@@ -104,6 +108,7 @@ void loop()
   }
 }
 
+
 void help()
 {
   Serial.println();
@@ -124,6 +129,7 @@ void help()
   Serial.println();
 }
 
+
 void printFreq(float freq)
 {
   if (freq > 1000000)
@@ -142,4 +148,5 @@ void printFreq(float freq)
   Serial.print(freq, 2);
   Serial.println(" Hz");
 }
-// END OF FILE
+
+// -- END OF FILE --
