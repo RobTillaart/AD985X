@@ -299,10 +299,10 @@ uint8_t AD9851::getRefClock()
   return (_config & AD9851_REFCLK) ? 180 : 30;
 }
 
-void AD9851::setARCCutOffFreq(uint32_t Hz = 10000000UL )
+void AD9851::setARCCutOffFreq(uint32_t Hz)
 {
   if (Hz > 30000000UL) Hz = 30000000;
-  _ARCCutOffFreq = Hz
+  _ARCCutOffFreq = Hz;
 };
 
 // -- END OF FILE --
