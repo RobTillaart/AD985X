@@ -4,7 +4,9 @@
 // VERSION: 0.2.0
 // PURPOSE: demo
 
+
 #include "AD985X.h"
+
 
 AD9851 freqGen;
 
@@ -12,6 +14,7 @@ uint32_t freq    = 0;
 uint32_t maxFreq = 2000000UL;
 
 bool up = true;
+
 
 void setup()
 {
@@ -26,6 +29,7 @@ void setup()
 
   freq = 100;
 }
+
 
 void loop()
 {
@@ -49,4 +53,4 @@ void loop()
   delay(50);
 }
 
-// END OF FILE
+// -- END OF FILE --

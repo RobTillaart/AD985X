@@ -4,6 +4,7 @@
 // VERSION: 0.2.0
 // PURPOSE: demo
 
+
 #include "AD985X.h"
 
 AD9851 freqGen; 
@@ -11,6 +12,7 @@ AD9851 freqGen;
 uint32_t freq = 0;
 uint32_t prev = 0;
 uint32_t maxFreq;
+
 
 void setup()
 {
@@ -26,6 +28,7 @@ void setup()
   maxFreq = freqGen.getMaxFrequency();
   Serial.println(maxFreq);
 }
+
 
 void loop()
 {
@@ -72,6 +75,7 @@ void loop()
   }
 }
 
+
 void help()
 {
   Serial.println();
@@ -86,4 +90,4 @@ void help()
   Serial.println();
 }
 
-// END OF FILE
+// -- END OF FILE --

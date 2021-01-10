@@ -4,9 +4,12 @@
 // VERSION: 0.1.0
 // PURPOSE: demo
 
+
 #include "AD985X.h"
 
+
 AD9851 freqGen; 
+
 
 void setup()
 {
@@ -18,6 +21,7 @@ void setup()
   freqGen.begin(10, 9, 8, 7, 6);
 }
 
+
 void loop()
 {
   float freq = readFreq(true);
@@ -26,6 +30,7 @@ void loop()
   Serial.println(freq);
   delay(1000);
 }
+
 
 float readFreq(bool KHZ)
 {

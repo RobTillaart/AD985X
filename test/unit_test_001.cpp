@@ -21,12 +21,6 @@
 
 #include <ArduinoUnitTests.h>
 
-
-#define assertEqualFloat(arg1, arg2, arg3)  assertOp("assertEqualFloat", "expected", fabs(arg1 - arg2), compareLessOrEqual, "<=", "actual", arg3)
-#define assertEqualINF(arg)  assertOp("assertEqualINF", "expected", INFINITY, compareEqual, "==", "actual", arg)
-#define assertEqualNAN(arg)  assertOp("assertEqualNAN", "expected", true, compareEqual, "==", "actual", isnan(arg))
-
-
 #include "Arduino.h"
 #include "AD985X.h"
 
@@ -143,6 +137,15 @@ unittest(test_ad9851_autoRefClock)
   funcgen.setFrequency(70000000);
   fprintf(stderr, "freq 70000000\t");
   assertEqual(180, funcgen.getRefClock());
+  
+  fprintf(stderr, "get- setARCCutOffFreq\t");
+  funcgen.setARCCutOffFreq(5000);
+  assertEqual(5000, funcgen.getARCCutOffFreq());
+  funcgen.setARCCutOffFreq(5000000);
+  assertEqual(5000000, funcgen.getARCCutOffFreq());
+  funcgen.setARCCutOffFreq(50000000);
+  assertEqual(30000000, funcgen.getARCCutOffFreq());
+
 }
 
 
