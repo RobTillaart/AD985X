@@ -50,8 +50,8 @@ unittest(test_auto_update)
   fprintf(stderr, "VERSION: %s\n", AD985X_LIB_VERSION);
   AD9850 funcgen0;
   AD9851 funcgen1;
-  funcgen.begin(4, 5, 6);
-  funcgen.begin(10, 11, 16);
+  funcgen0.begin(4, 5, 6);
+  funcgen1.begin(10, 11, 16);
 
 
   assertTrue(funcgen0.getAutoUpdate());
