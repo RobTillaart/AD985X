@@ -114,6 +114,7 @@ If the FQ_UD line can be shared directly it offers a way to start / change multi
 devices at the same time. 
 
 
+
 ## Interface
 
 ### Constructors
@@ -176,6 +177,7 @@ it at a later moment.
 The default of the flag is true, and will be reset to true by the **reset()** call.
 
 
+
 ### AD9850 specific
 
 The AD9850 has no specific functions.
@@ -190,7 +192,7 @@ to the reference clock of 180 MHz when the frequency is set above 10 MHz and
 to 30 MHz when the frequency is set to 10 MHz or lower.
 The initial value is **false** == OFF for backwards compatibility. 
 - **getAutoRefClock()** returns true is automode is set. 
-- **void setARCCutOffFreq(uint32_t Hz = 10000000UL )** set cut off ferquency 
+- **void setARCCutOffFreq(uint32_t Hz = 10000000UL )** set cut off frequency 
 for the auto reference clock. max value is 30 MHz, typical 10MHz
 - **uint32_t getARCCutOffFreq()** returns cut off frequency set.
 

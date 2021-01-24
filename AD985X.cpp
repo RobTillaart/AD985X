@@ -14,6 +14,7 @@
 //  0.2.2   2021-01-24  add manual updating frequency 
 //                      get- setManualFQ_UD(), update()
 //                      inverted SELECT line as preparation for multidevice.
+//
 
 
 #include "AD985X.h"
@@ -201,6 +202,7 @@ void AD9850::update()
   digitalWrite(_select, LOW);  
 }
 
+
 ////////////////////////////////////////////////////////
 //
 // AD9851
@@ -309,5 +311,6 @@ void AD9851::setARCCutOffFreq(uint32_t Hz)
   if (Hz > 30000000UL) Hz = 30000000;
   _ARCCutOffFreq = Hz;
 };
+
 
 // -- END OF FILE --
