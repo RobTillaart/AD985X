@@ -2,7 +2,7 @@
 //
 //    FILE: AD985X.h
 //  AUTHOR: Rob Tillaart
-// VERSION: 0.2.1
+// VERSION: 0.2.2
 //    DATE: 2019-02-08
 // PURPOSE: Class for AD9850 and AD9851 function generator
 //
@@ -13,7 +13,7 @@
 #include "SPI.h"
 
 
-#define AD985X_LIB_VERSION "0.2.1"
+#define AD985X_LIB_VERSION    (F("0.2.2"))
 
 
 #define AD9850_MAX_FREQ      (40UL * 1000UL * 1000UL)
@@ -47,6 +47,12 @@ public:
   // internal chip factor used for frequency. (debugging only)
   uint32_t getFactor()       { return _factor; };
 
+  // autoUpdate is default true;
+  void     setAutoUpdate(bool update) { _autoUpdate = update; };  
+  bool     getAutoUpdate()   { return _autoUpdate; };
+  void     update();
+
+
 protected:
   void     pulsePin(uint8_t pin);
   void     writeData();
@@ -63,6 +69,7 @@ protected:
   uint8_t  _reset   = 0;
   uint8_t  _fqud    = 0;
   int32_t  _offset  = 0;
+  bool     _autoUpdate = false;
 };
 
 
