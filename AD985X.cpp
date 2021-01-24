@@ -1,7 +1,7 @@
 //
 //    FILE: AD985X.cpp
 //  AUTHOR: Rob Tillaart
-// VERSION: 0.2.0
+// VERSION: 0.2.2
 //    DATE: 2019-02-08
 // PURPOSE: Class for AD9850 and AD9851 function generator
 //
@@ -11,7 +11,10 @@
 //  0.1.2   2020-12-27  add setAutoMode() + offset
 //  0.2.0   2020-12-28  major refactor class hierarchy + float frequency
 //  0.2.1   2021-01-10  add get- and setARCCutOffFreq()
-// 
+//  0.2.2   2021-01-24  add manual updating frequency 
+//                      get- setManualFQ_UD(), update()
+//                      inverted SELECT line as preparation for multidevice.
+//
 
 
 #include "AD985X.h"
@@ -44,7 +47,7 @@ void AD9850::begin(int select, int resetPin, int FQUDPin, int dataOut , int cloc
   pinMode(_select, OUTPUT);
   pinMode(_reset,  OUTPUT);
   pinMode(_fqud,   OUTPUT);
-  digitalWrite(_select, LOW);
+  digitalWrite(_select, LOW);  // device select = HIGH  See - https://github.com/RobTillaart/AD985X/issues/13
   digitalWrite(_reset,  LOW);
   digitalWrite(_fqud,   LOW);
   _useHW     = true;
@@ -80,6 +83,7 @@ void AD9850::reset()
   _freq   = 0;
   _factor = 0;
   _offset = 0;
+  _autoUpdate = true;
   writeData();
 }
 
@@ -119,11 +123,12 @@ void AD9850::writeData()
   // Serial.println(_factor, HEX);
   // Serial.println(_config, HEX);
   uint32_t data = _factor;
+
+  // used for multidevice config only - https://github.com/RobTillaart/AD985X/issues/13
+  digitalWrite(_select, HIGH);  
   if (_useHW)
   {
     SPI.beginTransaction(SPISettings(2000000, LSBFIRST, SPI_MODE0));
-    digitalWrite(_select, LOW);
-
     SPI.transfer(data & 0xFF);
     data >>= 8;
     SPI.transfer(data & 0xFF);
@@ -131,14 +136,10 @@ void AD9850::writeData()
     SPI.transfer(data & 0xFF);
     SPI.transfer(data >> 8);
     SPI.transfer(_config & 0xFD);  // mask factory test bit
-
-    digitalWrite(_select, HIGH);
     SPI.endTransaction();
   }
   else
   {
-    digitalWrite(_select, LOW);
-
     swSPI_transfer(data & 0xFF);
     data >>= 8;
     swSPI_transfer(data & 0xFF);
@@ -146,13 +147,12 @@ void AD9850::writeData()
     swSPI_transfer(data & 0xFF);
     swSPI_transfer(data >> 8);
     swSPI_transfer(_config & 0xFD);  // mask factory test bit
-
-    digitalWrite(_select, HIGH);
   }
+  digitalWrite(_select, LOW);
 
   // update frequency + phase + control bits.
   // should at least be 4 ns delay - P14 datasheet
-  pulsePin(_fqud);
+  if (_autoUpdate) update();
 }
 
 
@@ -183,7 +183,6 @@ void AD9850::setFrequency(uint32_t freq)
 
 
 // especially for lower frequencies (with decimals)
-// TODO: test accuracy decimals
 void AD9850::setFrequencyF(float freq)
 {
   // freq OUT = (Δ Phase × CLKIN)/2^32
@@ -193,6 +192,14 @@ void AD9850::setFrequencyF(float freq)
   _freq = freq;
   _factor += _offset;
   writeData();
+}
+
+
+void AD9850::update()
+{
+  digitalWrite(_select, HIGH);  
+  pulsePin(_fqud);
+  digitalWrite(_select, LOW);  
 }
 
 
@@ -304,5 +311,6 @@ void AD9851::setARCCutOffFreq(uint32_t Hz)
   if (Hz > 30000000UL) Hz = 30000000;
   _ARCCutOffFreq = Hz;
 };
+
 
 // -- END OF FILE --

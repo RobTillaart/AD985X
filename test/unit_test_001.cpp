@@ -45,6 +45,28 @@ unittest(test_constructor)
 }
 
 
+unittest(test_auto_update)
+{
+  fprintf(stderr, "VERSION: %s\n", AD985X_LIB_VERSION);
+  AD9850 funcgen0;
+  AD9851 funcgen1;
+  funcgen0.begin(4, 5, 6);
+  funcgen1.begin(10, 11, 16);
+
+
+  assertTrue(funcgen0.getAutoUpdate());
+  assertTrue(funcgen1.getAutoUpdate());
+  funcgen0.setAutoUpdate(false);
+  funcgen1.setAutoUpdate(false);
+  assertFalse(funcgen0.getAutoUpdate());
+  assertFalse(funcgen1.getAutoUpdate());
+  funcgen0.setAutoUpdate(true);
+  funcgen1.setAutoUpdate(true);
+  assertTrue(funcgen0.getAutoUpdate());
+  assertTrue(funcgen1.getAutoUpdate());
+}
+
+
 unittest(test_ad9850)
 {
   AD9850 funcgen;
