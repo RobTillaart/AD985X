@@ -6,7 +6,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
 
-## [0.3.6] - 2023-01-11
+## [0.3.6] - 2023-10-15
 - add ESP32 HSPI example
 - add unit tests for setFrequency setFrequencyF
 - update readme.md
