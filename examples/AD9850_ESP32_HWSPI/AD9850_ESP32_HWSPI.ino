@@ -25,7 +25,7 @@ void setup()
 
   //  Select HW SPI for ESP32
   freqGen.selectHSPI();
-  freqGen.begin(15);
+  freqGen.begin(15, 16, 17);  //   selectPin, resetPin, FQUDPin
 
   freqGen.powerUp();
   maxFreq = freqGen.getMaxFrequency();
