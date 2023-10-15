@@ -193,13 +193,17 @@ For the AD9850 => 40 MHz, for the AD9851 => 70 MHz.
   - Note setFrequencyF is affected by the autoUpdateFlag.
 The frequency is limited by the MaxFrequency of the class used.
 Returns false if limited. 
-- **uint32_t getMaxFrequency()** returns the maximum frequency that can be set. For the AD9850 this is 20 MHz.
-For the AD9851 this is 70 MHz.
-- **float getFrequency()** returns the frequency set. As it returns a float it might loose some accuracy at higher frequencies.
+- **uint32_t getMaxFrequency()** returns the maximum frequency that can be set. 
+  - For the AD9850 this is 20 MHz.
+  - For the AD9851 this is 70 MHz.
+- **float getFrequency()** returns the frequency set. 
+As it returns a float it might loose some accuracy at higher frequencies.
 - **bool setPhase(uint8_t phase = 0)** set the phase in units of 11.25°  0..31 allowed. 
 Default it sets the phase to 0.
 Returns false if phase > 31, no change to phase in that case.
-- **uint8_t getPhase()** returns the phase set, 0 by default. One need to multiply by 11.25° to get the actual angle.
+- **uint8_t getPhase()** returns the phase set, 0 by default. 
+  - multiply by 11.25° to get the actual phase angle in degrees.
+  - multiply by (PI \* 0.0625) to get actual phase angle in radians.
 
 
 ### Calibration
