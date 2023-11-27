@@ -263,6 +263,15 @@ void AD9850::update()
 //  bit is a 6x multiplier bit P.14 datasheet
 #define AD9851_REFCLK        0x01
 
+AD9851::AD9851(uint8_t slaveSelect, uint8_t resetPin, uint8_t FQUDPin, __SPI_CLASS__ * mySPI, uint8_t spiClock) : AD9850(slaveSelect, resetPin, FQUDPin, mySPI, spiClock)
+{
+}
+
+
+AD9851::AD9851(uint8_t slaveSelect, uint8_t resetPin, uint8_t FQUDPin, uint8_t spiData, uint8_t spiClock) : AD9850(slaveSelect, resetPin, FQUDPin, spiData, spiClock)
+{
+}
+
 
 bool AD9851::setFrequency(uint32_t freq)
 {

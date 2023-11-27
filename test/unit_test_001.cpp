@@ -45,8 +45,8 @@ unittest(test_constants)
 
 unittest(test_constructor)
 {
-  AD9850 funcgen0;
-  AD9851 funcgen1;
+  AD9850 funcgen0(10, 9, 8, 7, 6);  //  SW SPI
+  AD9851 funcgen1(10, 11, 12, 13, 14);
 
   assertEqual(AD9850_MAX_FREQ, funcgen0.getMaxFrequency());
   assertEqual(AD9851_MAX_FREQ, funcgen1.getMaxFrequency());

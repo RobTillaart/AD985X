@@ -115,6 +115,13 @@ protected:
 class AD9851 : public AD9850
 {
 public:
+  //  HARDWARE SPI
+  //  spiClock needed for RESET(). TODO: nicer solution?
+  AD9851(uint8_t slaveSelect, uint8_t resetPin, uint8_t FQUDPin, __SPI_CLASS__ * mySPI, uint8_t spiClock);
+  //  SOFTWARE SPI
+  AD9851(uint8_t slaveSelect, uint8_t resetPin, uint8_t FQUDPin, uint8_t spiData, uint8_t spiClock);
+
+
   //  returns false if limited to AD9851_MAX_FREQ
   bool     setFrequency(uint32_t freq);    //  0..AD9851_MAX_FREQ
   bool     setFrequencyF(float freq);      //  works best for low frequencies.
