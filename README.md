@@ -41,6 +41,16 @@ way more functionality.
 Note: mainly tested on Arduino UNO. Tweaking for other platforms is expected.
 
 
+#### 0.4.0 breaking change
+
+The version 0.4.0 has breaking changes in the interface. 
+The essence is removal of ESP32 specific code from the library. 
+Furthermore moved parameters from **begin()** to the constructor.
+Finally made a specific constructor for HW SPI and SW SPI.
+This makes it possible to support the ESP32-S3 and other processors in the future. 
+Also it makes the library a bit simpler to maintain.
+
+
 ## Connection
 
 Schema break-out
