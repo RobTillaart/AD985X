@@ -15,10 +15,12 @@
 #define AD985X_LIB_VERSION        (F("0.4.0"))
 
 
-#if defined(ARDUINO_ARCH_RP2040)
-#define __SPI_CLASS__   SPIClassRP2040
-#else
-#define __SPI_CLASS__   SPIClass
+#ifndef __SPI_CLASS__
+  #if defined(ARDUINO_ARCH_RP2040)
+  #define __SPI_CLASS__   SPIClassRP2040
+  #else
+  #define __SPI_CLASS__   SPIClass
+  #endif
 #endif
 
 
