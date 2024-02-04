@@ -45,7 +45,7 @@ AD9850::AD9850(uint8_t slaveSelect, uint8_t resetPin, uint8_t FQUDPin, uint8_t s
   _fqud    = FQUDPin;
   _hwSPI   = false;
   _mySPI   = NULL;
-  _dataOut = 0;
+  _dataOut = spiData;
   _clock   = spiClock;
 }
 
