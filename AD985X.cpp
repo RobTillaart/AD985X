@@ -161,7 +161,7 @@ void AD9850::writeData()
     data >>= 8;
     _mySPI->transfer(data & 0xFF);
     _mySPI->transfer(data >> 8);
-    _mySPI->transfer(_config & 0xFC);  //  mask factory test bit
+    _mySPI->transfer(_config & 0xFD);  //  mask factory test bit
     _mySPI->endTransaction();
   }
   else
@@ -172,7 +172,7 @@ void AD9850::writeData()
     data >>= 8;
     swSPI_transfer(data & 0xFF);
     swSPI_transfer(data >> 8);
-    swSPI_transfer(_config & 0xFC);  //  mask factory test bit
+    swSPI_transfer(_config & 0xFD);  //  mask factory test bit
   }
   digitalWrite(_select, LOW);
 
