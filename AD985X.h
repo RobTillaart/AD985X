@@ -107,8 +107,9 @@ protected:
   uint8_t  _config  = 0;
   int32_t  _offset  = 0;
   bool     _autoUpdate  = true;
-  //  _factoryMask see PR #32
-  uint8_t  _factoryMask = 0xFC;
+  //  _factoryMask see PR #32, 
+  //  0xFD is safe value for both AD9850/51
+  uint8_t _factoryMask = 0xFD;
 };
 
 
