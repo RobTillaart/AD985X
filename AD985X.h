@@ -42,7 +42,7 @@ class AD9850
 public:
   //  HARDWARE SPI
   //  spiClock needed for RESET(). TODO: nicer solution?
-  AD9850(uint8_t slaveSelect, uint8_t resetPin, uint8_t FQUDPin, __SPI_CLASS__ * mySPI, uint8_t spiClock);
+  AD9850(uint8_t slaveSelect, uint8_t resetPin, uint8_t FQUDPin, __SPI_CLASS__ * mySPI);
   //  SOFTWARE SPI
   AD9850(uint8_t slaveSelect, uint8_t resetPin, uint8_t FQUDPin, uint8_t spiData, uint8_t spiClock);
 
@@ -125,7 +125,7 @@ class AD9851 : public AD9850
 public:
   //  HARDWARE SPI
   //  spiClock needed for RESET(). TODO: nicer solution?
-  AD9851(uint8_t slaveSelect, uint8_t resetPin, uint8_t FQUDPin, __SPI_CLASS__ * mySPI, uint8_t spiClock);
+  AD9851(uint8_t slaveSelect, uint8_t resetPin, uint8_t FQUDPin, __SPI_CLASS__ * mySPI);
   //  SOFTWARE SPI
   AD9851(uint8_t slaveSelect, uint8_t resetPin, uint8_t FQUDPin, uint8_t spiData, uint8_t spiClock);
 
