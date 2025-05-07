@@ -40,7 +40,7 @@ AD9850::AD9850(uint8_t select, uint8_t resetPin, uint8_t FQUDPin, __SPI_CLASS__ 
   _factoryMask = 0xFC;
 }
 
-//  new since 0.7.1
+//  new since 0.7.2
 AD9850::AD9850(uint8_t select, uint8_t resetPin, uint8_t FQUDPin, __SPI_CLASS__ * mySPI)
 {
   _select  = select;
@@ -53,7 +53,7 @@ AD9850::AD9850(uint8_t select, uint8_t resetPin, uint8_t FQUDPin, __SPI_CLASS__ 
   _factoryMask = 0xFC;
 }
 
-//  new since 0.7.1
+//  new since 0.7.2
 AD9850::AD9850(uint8_t resetPin, uint8_t FQUDPin, __SPI_CLASS__ * mySPI)
 {
   _select  = 255;  //  out of range.
@@ -82,7 +82,7 @@ AD9850::AD9850(uint8_t select, uint8_t resetPin, uint8_t FQUDPin, uint8_t spiDat
   _factoryMask = 0xFC;
 }
 
-//  new since 0.7.1
+//  new since 0.7.2
 AD9850::AD9850(uint8_t resetPin, uint8_t FQUDPin, uint8_t spiData, uint8_t spiClock)
 {
   _select  = 255;  //  out of range.
@@ -331,14 +331,14 @@ AD9851::AD9851(uint8_t select, uint8_t resetPin, uint8_t FQUDPin, __SPI_CLASS__ 
   _factoryMask = 0xFD;
 }
 
-//  new since 0.7.1
+//  new since 0.7.2
 AD9851::AD9851(uint8_t select, uint8_t resetPin, uint8_t FQUDPin, __SPI_CLASS__ * mySPI)
        :AD9850(select, resetPin, FQUDPin, mySPI)
 {
   _factoryMask = 0xFD;
 }
 
-//  new since 0.7.1
+//  new since 0.7.2
 AD9851::AD9851(uint8_t resetPin, uint8_t FQUDPin, __SPI_CLASS__ * mySPI)
        :AD9850(resetPin, FQUDPin, mySPI)
 {
@@ -355,7 +355,7 @@ AD9851::AD9851(uint8_t select, uint8_t resetPin, uint8_t FQUDPin, uint8_t spiDat
   _factoryMask = 0xFD;
 }
 
-//  new since 0.7.1
+//  new since 0.7.2
 AD9851::AD9851(uint8_t resetPin, uint8_t FQUDPin, uint8_t spiData, uint8_t spiClock)
        :AD9850(resetPin, FQUDPin, spiData, spiClock)
 {

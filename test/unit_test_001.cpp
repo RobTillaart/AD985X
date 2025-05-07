@@ -51,12 +51,12 @@ unittest(test_constructors)
   AD9850 ad3(9, 8, 7, 6);       //  SW SPI no select
 
   assertEqual(AD9850_MAX_FREQ, ad0.getMaxFrequency());
-  assertEqual(AD9850_MAX_FREQ, ad0.getMaxFrequency());
-  assertEqual(AD9850_MAX_FREQ, ad0.getMaxFrequency());
-  assertEqual(AD9850_MAX_FREQ, ad0.getMaxFrequency());
+  assertEqual(AD9850_MAX_FREQ, ad1.getMaxFrequency());
+  assertEqual(AD9850_MAX_FREQ, ad2.getMaxFrequency());
+  assertEqual(AD9850_MAX_FREQ, ad3.getMaxFrequency());
 
-  AD9851 ad4(4, 5, 6, SPI);    //  HW SPI no spi clock
-  AD9851 ad5(4, 5, SPI);       //  HW SPI no spi clock, no select
+  AD9851 ad4(4, 5, 6, &SPI);    //  HW SPI no spi clock
+  AD9851 ad5(4, 5, &SPI);       //  HW SPI no spi clock, no select
   AD9851 ad6(10, 9, 8, 7, 6);  //  SW SPI
   AD9851 ad7(9, 8, 7, 6);  //  SW SPI no select
 

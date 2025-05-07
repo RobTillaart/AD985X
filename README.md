@@ -41,10 +41,11 @@ way more functionality.
 Note: mainly tested on Arduino UNO.
 
 
-### 0.7.1 new constructors
+### 0.7.2 new constructors
 
 Not a breaking change (yet), the library has added new constructors as the **spiClock**
-line is not needed anymore. See #37.
+line is not needed any more. See #37.
+Also a new constructor is added to work without a select pin (always selected).
 
 
 ### 0.5.0 Breaking change
