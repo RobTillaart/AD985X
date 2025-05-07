@@ -227,15 +227,19 @@ unittest(test_ad9851_autoRefClock)
     fprintf(stderr, "freq %u\t", freq);
     assertEqual(30, funcgen.getRefClock());
   }
-
+  fprintf(stderr, "\n");
+  
   funcgen.setAutoRefClock(true);
   assertTrue(funcgen.getAutoRefClock());
+  fprintf(stderr, "\n");
+
   for (uint32_t freq = 70; freq <= 1000000; freq *= 10)
   {
     funcgen.setFrequency(freq);
     fprintf(stderr, "freq %u\t", freq);
     assertEqual(30, funcgen.getRefClock());
   }
+   fprintf(stderr, "\n");
 
   funcgen.setFrequency(10000000);
   fprintf(stderr, "freq 10000000\t");
@@ -246,8 +250,9 @@ unittest(test_ad9851_autoRefClock)
   funcgen.setFrequency(70000000);
   fprintf(stderr, "freq 70000000\t");
   assertEqual(180, funcgen.getRefClock());
+  fprintf(stderr, "\n");
 
-  fprintf(stderr, "get- setARCCutOffFreq\t");
+  fprintf(stderr, "get- setARCCutOffFreq\n");
   funcgen.setARCCutOffFreq(5000);
   assertEqual(5000, funcgen.getARCCutOffFreq());
   funcgen.setARCCutOffFreq(5000000);
