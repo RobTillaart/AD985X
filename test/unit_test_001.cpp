@@ -43,7 +43,31 @@ unittest(test_constants)
 }
 
 
-unittest(test_constructor)
+unittest(test_constructors)
+{
+  AD9850 ad0(4, 5, 6, &SPI);    //  HW SPI no spi clock
+  AD9850 ad1(4, 5, &SPI);       //  HW SPI no spi clock, no select
+  AD9850 ad2(10, 9, 8, 7, 6);   //  SW SPI
+  AD9850 ad3(9, 8, 7, 6);       //  SW SPI no select
+
+  assertEqual(AD9850_MAX_FREQ, ad0.getMaxFrequency());
+  assertEqual(AD9850_MAX_FREQ, ad0.getMaxFrequency());
+  assertEqual(AD9850_MAX_FREQ, ad0.getMaxFrequency());
+  assertEqual(AD9850_MAX_FREQ, ad0.getMaxFrequency());
+
+  AD9851 ad4(4, 5, 6, SPI);    //  HW SPI no spi clock
+  AD9851 ad5(4, 5, SPI);       //  HW SPI no spi clock, no select
+  AD9851 ad6(10, 9, 8, 7, 6);  //  SW SPI
+  AD9851 ad7(9, 8, 7, 6);  //  SW SPI no select
+
+  assertEqual(AD9851_MAX_FREQ, ad4.getMaxFrequency());
+  assertEqual(AD9851_MAX_FREQ, ad5.getMaxFrequency());
+  assertEqual(AD9851_MAX_FREQ, ad6.getMaxFrequency());
+  assertEqual(AD9851_MAX_FREQ, ad7.getMaxFrequency());
+}
+
+
+unittest(test_maxFrequency)
 {
   AD9850 funcgen0(10, 9, 8, 7, 6);  //  SW SPI
   AD9851 funcgen1(10, 11, 12, 13, 14);
@@ -63,12 +87,16 @@ unittest(test_auto_update)
 
   assertTrue(funcgen0.getAutoUpdate());
   assertTrue(funcgen1.getAutoUpdate());
+
   funcgen0.setAutoUpdate(false);
   funcgen1.setAutoUpdate(false);
+
   assertFalse(funcgen0.getAutoUpdate());
   assertFalse(funcgen1.getAutoUpdate());
+
   funcgen0.setAutoUpdate(true);
   funcgen1.setAutoUpdate(true);
+
   assertTrue(funcgen0.getAutoUpdate());
   assertTrue(funcgen1.getAutoUpdate());
 }
@@ -148,7 +176,7 @@ unittest(test_ad9851_phase)
 {
   AD9851 funcgen(10, 9, 8, 7, 6);  //  SW SPI
   funcgen.begin();
-  
+
   funcgen.setFrequency(1000);
   long freq = funcgen.getFrequency();
   assertEqual(1000, freq);
@@ -171,14 +199,14 @@ unittest(test_ad9851_reset)
 {
   AD9851 funcgen(10, 9, 8, 7, 6);  //  SW SPI
   funcgen.begin();
-  
+
   funcgen.setFrequency(1000);
   assertEqual(1000, funcgen.getFrequency());
   funcgen.setPhase(14);
   assertEqual(14, funcgen.getPhase());
   funcgen.setRefClockHigh();
   assertEqual(180, funcgen.getRefClock());
-  
+
   funcgen.reset();
 
   assertEqual(0,  funcgen.getFrequency());
@@ -218,7 +246,7 @@ unittest(test_ad9851_autoRefClock)
   funcgen.setFrequency(70000000);
   fprintf(stderr, "freq 70000000\t");
   assertEqual(180, funcgen.getRefClock());
-  
+
   fprintf(stderr, "get- setARCCutOffFreq\t");
   funcgen.setARCCutOffFreq(5000);
   assertEqual(5000, funcgen.getARCCutOffFreq());
@@ -266,5 +294,6 @@ unittest(test_ad9851_float_freq)
 
 
 unittest_main()
+
 
 //  -- END OF FILE --
