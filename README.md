@@ -101,7 +101,7 @@ Schema break-out
 - https://github.com/RobTillaart/AD9833
 - https://github.com/RobTillaart/AD985X
 - https://github.com/RobTillaart/functionGenerator  software waveform generator
-- https://pages.mtu.edu/~suits/notefreqs.html  frequency table for notes.
+- https://plastic.audio/note-frequencies/  frequency table for notes.
 
 
 ## Multi device 
