@@ -21,8 +21,8 @@ These devices can produce a square and a sine wave
 
 |   type   | max freq |  phase (step size)  |  Notes  |
 |:--------:|:--------:|:-------------------:|:--------|
-|  AD9850  |  40 MHz  |     0..31 x 11.25°  |
-|  AD9851  |  70 MHz  |     0..31 x 11.25°  | has more options.
+|  AD9850  |  40 MHz  |     0..31 x 11.25Â°  |
+|  AD9851  |  70 MHz  |     0..31 x 11.25Â°  | has more options.
 
 
 Note that at the max frequency the devices do not give a nice sine any more.
@@ -101,7 +101,7 @@ Schema break-out
 - https://github.com/RobTillaart/AD9833
 - https://github.com/RobTillaart/AD985X
 - https://github.com/RobTillaart/functionGenerator  software waveform generator
-- https://pages.mtu.edu/~suits/notefreqs.html  frequency table for notes.
+- https://plastic.audio/note-frequencies/  frequency table for notes.
 
 
 ## Multi device 
@@ -256,11 +256,11 @@ Returns false if limited.
   - For the AD9851 this is 70 MHz.
 - **float getFrequency()** returns the frequency set. 
 As it returns a float it might loose some accuracy at higher frequencies.
-- **bool setPhase(uint8_t phase = 0)** set the phase in units of 11.25°  0..31 allowed. 
+- **bool setPhase(uint8_t phase = 0)** set the phase in units of 11.25Â°  0..31 allowed. 
 Default it sets the phase to 0.
 Returns false if phase > 31, no change to phase in that case.
 - **uint8_t getPhase()** returns the phase set, 0 by default. 
-  - multiply by 11.25° to get the actual phase angle in degrees.
+  - multiply by 11.25Â° to get the actual phase angle in degrees.
   - multiply by (PI \* 0.0625) to get actual phase angle in radians.
 
 
